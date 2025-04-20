@@ -11,14 +11,16 @@ namespace VTReplayConverter
 {
     internal class Program
     {
+        public const float BulletPollRate = 0.25f;
         public static string VTReplaysPath;
         public static string AcmiSavePath;
+        public static string TacviewTerrainPath = "C:\\ProgramData\\Tacview\\Data\\Terrain\\Custom";
 
         public static bool ProgramRunning = true;
         static void Main(string[] args)
         {
 
-            Console.WriteLine("Initializing Replay Recorder");
+            //Console.WriteLine("Initializing Replay Recorder");
             ReplayRecorder recorder = new ReplayRecorder();
             recorder.Awake();
 
@@ -27,7 +29,8 @@ namespace VTReplayConverter
             CommandHandler.SetupCommands();
             Task.Run(() => CommandHandler.ReadCommands());
 
-
+            Console.WriteLine("VTOL VR Tactical Replay to TACVIEW Converter");
+            Console.WriteLine("Type in \"Help\" for a list of commands!");
             while (ProgramRunning) { }
 
         }

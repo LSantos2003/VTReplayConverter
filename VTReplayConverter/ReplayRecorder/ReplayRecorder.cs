@@ -38,6 +38,11 @@ namespace VTReplayConverter
 			ReplayRecorder.Instance = this;
 		}
 
+		public void Reset()
+        {
+			ReplaySerializer.ClearSerializedReplay();
+			ReplayRecorder.Instance = null;
+		}
 		public int keyframeCount { get; private set; }
 
 		public void RecountKeys()

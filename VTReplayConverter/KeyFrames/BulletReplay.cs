@@ -30,6 +30,7 @@ namespace VTReplayConverter
 
 		public float lifeTime;
 
+		public bool initiliazed = false;
 		public Vector3 GetBulletPos(float t)
 		{
 

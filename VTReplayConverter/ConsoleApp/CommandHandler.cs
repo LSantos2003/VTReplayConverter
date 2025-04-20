@@ -40,7 +40,7 @@ namespace VTReplayConverter.ConsoleApp
                 {
                     Console.Write(">>>");
                     string command = Console.ReadLine();
-                    OnCommandEntered(command.ToLower());
+                    OnCommandEntered(command.ToUpper());
                 }
                 else if (pauseInput && Console.ReadKey(true).Key == ConsoleKey.Escape)
                 {
@@ -99,7 +99,7 @@ namespace VTReplayConverter.ConsoleApp
                 {
                     var action = (Action<string>)methodInfo.CreateDelegate(typeof(Action<string>));
                     ConsoleCommand consoleCommand = new ConsoleCommand(attribute, action);
-                    commandDict.Add(attribute.Prefix.ToLower(), consoleCommand);
+                    commandDict.Add(attribute.Prefix.ToUpper(), consoleCommand);
 
                     commandAttributeList.Add(attribute);
                 }
@@ -110,7 +110,7 @@ namespace VTReplayConverter.ConsoleApp
 
         }
 
-        [Command("help", "I hope you know what this does by now")]
+        [Command("Help", "I hope you know what this does by now")]
         private static void Help(string args)
         {
 
@@ -125,7 +125,15 @@ namespace VTReplayConverter.ConsoleApp
 
         }
 
-        [Command("end", "Ends the program")]
+        [Command("Clear", "Clear commands prompt")]
+        private static void Clear(string args)
+        {
+            Console.Clear();
+            Console.WriteLine("VTOL VR Tactical Replay to TACVIEW Converter");
+            Console.WriteLine("Type in \"Help\" for a list of commands!");
+        }
+
+        [Command("End", "Ends the program")]
         private static void TestPrint(string args)
         {
             Console.WriteLine("Ending program");
@@ -143,7 +151,7 @@ namespace VTReplayConverter.ConsoleApp
                 return;
             }
 
-            string[] vtrPaths = Directory.GetFiles(Program.VTReplaysPath, "*.*vtr", SearchOption.AllDirectories);
+            string[] vtrPaths = Directory.GetDirectories(Program.VTReplaysPath);
             foreach (string vtrPath in vtrPaths)
             {
                 Console.WriteLine(Path.GetFileName(vtrPath));
@@ -154,21 +162,31 @@ namespace VTReplayConverter.ConsoleApp
         [Command("Open", "Opens existing TACVIEW file with default process")]
         private static void OpenFile(string args)
         {
+            ConvertMap(args);
+
             string openPath = Path.Combine(Program.AcmiSavePath, $"{args}.acmi");
             if (!File.Exists(openPath))
             {
                 Console.WriteLine("Path does not exist");
-                Console.Write("Path");
+                Console.Write(openPath);
                 return;
             }
 
             System.Diagnostics.Process.Start(openPath);
         }
 
-        [Command("Convert", "Converts specific VTR File")]
-        private static void ConvertFile(string args)
+        [Command("Convert", "Converts both Track and Map File")]
+        private static void ConvertMapAndFile(string args)
         {
-            string readPath = Path.Combine(Program.VTReplaysPath, $"{args}\\{args}.vtr");
+            ConvertMap(args);
+            ConvertTrackFile(args);
+        }
+
+        [Command("ConvertTrack", "Converts specific VTR File")]
+        private static void ConvertTrackFile(string args)
+        {
+            Console.WriteLine("-----------------------");
+            string readPath = Path.Combine(Program.VTReplaysPath, $"{args}\\replay.vtr");
             string savePath = Path.Combine(Program.AcmiSavePath, $"{args}.acmi");
             if (!File.Exists(readPath))
             {
@@ -183,6 +201,29 @@ namespace VTReplayConverter.ConsoleApp
             System.Diagnostics.Process.Start(savePath);
         }
 
+        [Command("ConvertMap", "Converts Map File")]
+        private static void ConvertMap(string args)
+        {
+            Console.WriteLine("-----------------------");
+            string heightMapPath = Path.Combine(Program.VTReplaysPath, $"{args}\\heightmap.pngb");
+            string configPath = Path.Combine(Program.VTReplaysPath, $"{args}\\info.cfg");
+            if (!File.Exists(heightMapPath))
+            {
+                Console.WriteLine($"File does not exist at {heightMapPath}");
+                return;
+            }
+
+            if (!File.Exists(configPath))
+            {
+                Console.WriteLine($"File does not exist at {configPath}");
+                return;
+            }
+
+            Console.WriteLine("Converting Map File");
+            HeightMapGeneration.ConvertHeightMap(heightMapPath, configPath);
+            Console.WriteLine("Map File Converted!");
+        }
+
         [Command("ConvertAll", "Converts all VT Replays to ACMI")]
         private static void ConvertAll(string args)
         {
@@ -194,16 +235,20 @@ namespace VTReplayConverter.ConsoleApp
             }
 
             string[] vtrPaths = Directory.GetFiles(Program.VTReplaysPath, "*.*vtr", SearchOption.AllDirectories);
+            Console.WriteLine("-----------------------");
             Console.WriteLine("Converting all VTR files\n");
             foreach (var vtrPath in vtrPaths)
             {
-                string fileName = Path.GetFileNameWithoutExtension(vtrPath);
-                string savePath = Path.Combine(Program.AcmiSavePath, $"{fileName}.acmi");
+                string folderName = Path.GetDirectoryName(vtrPath);
+                folderName = Path.GetFileName(folderName);
+                string savePath = Path.Combine(Program.AcmiSavePath, $"{folderName}.acmi");
                 VTACMI.ConvertToACMI(vtrPath, savePath);
+                Console.WriteLine("-----------------------");
             }
 
-            Console.WriteLine("Files converted!");
+            Console.WriteLine($"{vtrPaths.Length} Files converted!");
         }
+
 
         [Command("Debug", "Debugs specific VTR File")]
         private static void DebugVTR(string args)

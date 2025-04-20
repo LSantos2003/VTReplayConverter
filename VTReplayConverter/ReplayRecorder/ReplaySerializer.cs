@@ -33,6 +33,9 @@ namespace VTReplayConverter
 
 		public static void ClearSerializedReplay()
 		{
+			kfBuffer = new byte[1024]; ;
+			lz4Buffer = new byte[1]; ;
+			decompressBuffer = new byte[1]; ;
 			ReplaySerializer.serializedReplay = null;
 		}
 
@@ -128,7 +131,7 @@ namespace VTReplayConverter
 					ReplaySerializer.decompressBuffer = new byte[num];
 				}
 				int num2 = LZ4Codec.Decode(buffer, 0, count, ReplaySerializer.decompressBuffer, 0, ReplaySerializer.decompressBuffer.Length);
-				Console.WriteLine(string.Format("Replay dSize = {0}", num2));
+				Console.WriteLine(string.Format("Replay Disk Size = {0}", num2));
 				using (MemoryStream memoryStream = new MemoryStream(ReplaySerializer.decompressBuffer, 0, num2))
 				{
 					ReplaySerializer.Deserialize(memoryStream, recorder);
