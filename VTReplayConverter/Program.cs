@@ -20,10 +20,6 @@ namespace VTReplayConverter
         static void Main(string[] args)
         {
 
-            //Console.WriteLine("Initializing Replay Recorder");
-            ReplayRecorder recorder = new ReplayRecorder();
-            recorder.Awake();
-
             SetUpFilePaths();
 
             CommandHandler.SetupCommands();
