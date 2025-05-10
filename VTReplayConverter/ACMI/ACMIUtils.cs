@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +20,46 @@ namespace VTReplayConverter
             Console.SetCursorPosition(0, currentLineCursor);
         }
 
+        public static bool IsReplayConverted(string replayPath)
+        {
+            string folderName = Path.GetFileName(replayPath);
+            string tacviewSavePath = Path.Combine(Program.AcmiSavePath, $"{folderName}.acmi");
+
+            return File.Exists(tacviewSavePath);
+        }
+
+        public static void ReplaceWithZippedVersion(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"File not found: {filePath}");
+            }
+
+            string directory = Path.GetDirectoryName(filePath);
+            string fileName = Path.GetFileName(filePath);
+            string tempZipPath = Path.Combine(directory, fileName + ".ziptmp");
+
+            try
+            {
+                // Create a zip file next to the original file
+                using (FileStream zipToOpen = new FileStream(tempZipPath, FileMode.Create))
+                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
+                {
+                    archive.CreateEntryFromFile(filePath, fileName, CompressionLevel.Optimal);
+                }
+
+                // Replace the original file with the zipped version (but keep the original name)
+                File.Delete(filePath);
+                File.Move(tempZipPath, filePath);
+            }
+            catch
+            {
+                if (File.Exists(tempZipPath))
+                    File.Delete(tempZipPath);
+                throw;
+            }
+        }
+
         public static Vector3D WorldPositionToGPSCoords(Vector3 worldPoint)
         {
             Vector3D vector3D = VTMapManager.WorldToGlobalPoint(worldPoint);
@@ -34,31 +76,128 @@ namespace VTReplayConverter
             return new Vector3D(num, num4, z);
         }
 
-        public static bool GetPosition(MotionTrack track, float t, out Vector3 pos, out Vector3 eulerRotation, out bool lastFrame)
+        public static string GetEntityHex(int trackId)
+        {
+            return (trackId + 1).ToString();
+        }
+
+        public static string GetJammerHex(int jammerId)
+        {
+            return (jammerId + 1).ToString() + "C";
+        }
+
+        public static string GetBulletHex(int bulletId)
+        {
+            return (bulletId + 1).ToString() + "B";
+        }
+
+        public static Teams GetEntityTeam(ReplayRecorder.ReplayEntity entity)
+        {
+            switch ((VTACMI.ReplayActorEntityTypes)entity.entityType)
+            {
+                case VTACMI.ReplayActorEntityTypes.AirA:
+                case VTACMI.ReplayActorEntityTypes.GroundA:
+                case VTACMI.ReplayActorEntityTypes.SeaA:
+                case VTACMI.ReplayActorEntityTypes.ChopperA:
+                    return Teams.Allied;
+                case VTACMI.ReplayActorEntityTypes.AirB:
+                case VTACMI.ReplayActorEntityTypes.GroundB:
+                case VTACMI.ReplayActorEntityTypes.SeaB:
+                case VTACMI.ReplayActorEntityTypes.ChopperB:
+                    return Teams.Enemy;
+                case VTACMI.ReplayActorEntityTypes.Missile:
+                    return Teams.Allied;
+                default:
+                    return Teams.Allied;
+ 
+            }
+
+        }
+        public static bool GetPositionAndRotation(MotionTrack track, float t, out Vector3 pos, out Vector3 eulerRotation, out Quaternion rotation, out bool lastFrame)
         {
             if (t < track.startTime || t > track.endTime)
             {
                 pos = default(Vector3);
                 eulerRotation = default(Vector3);
+                rotation = default(Quaternion);
                 lastFrame = false;
                 return false;
             }
 
-            for (int i = 0; i < track.keyframes.Count; i++)
+            int segmentIndex;
+            FindSegment<ReplayRecorder.MotionKeyframe>(track, out segmentIndex, t);
+      
+            if (segmentIndex >= 0 && track[segmentIndex].t == t)
             {
-                if (track[i].t == t)
-                {
-                    pos = track[i].fp.globalPoint.toVector3;
-                    eulerRotation = ToEulerAngles(track[i].rotation);
-                    lastFrame = t >= track.endTime;
-                    return true;
-                }
+                pos = track[segmentIndex].fp.globalPoint.toVector3;
+                eulerRotation = ToEulerAngles(track[segmentIndex].rotation);
+                rotation = track[segmentIndex].rotation;
+                lastFrame = t >= track.endTime;
+                return true;
             }
+            
 
             pos = default(Vector3);
             eulerRotation = default(Vector3);
+            rotation = default(Quaternion);
             lastFrame = false;
             return false;
+        }
+
+        public static bool GetPosition(MotionTrack track, float t, out Vector3 pos, out bool lastFrame)
+        {
+            if (t < track.startTime || t > track.endTime)
+            {
+                pos = default(Vector3);
+                lastFrame = false;
+                return false;
+            }
+
+            int segmentIndex;
+            FindSegment<ReplayRecorder.MotionKeyframe>(track, out segmentIndex, t);
+
+            if (segmentIndex >= 0)
+            {
+                pos = track[segmentIndex].fp.globalPoint.toVector3;
+                lastFrame = t >= track.endTime;
+                return true;
+            }
+
+
+            pos = default(Vector3);
+            lastFrame = false;
+            return false;
+        }
+
+        public static void FindSegment<T>(Track<T> track, out int segmentIndex, float targetTime) where T : ReplayRecorder.Keyframe
+        {
+            int low = 0;
+            int high = track.keyframes.Count - 1;
+
+            while (low <= high)
+            {
+                int mid = low + (high - low) / 2;
+                float midTime = track[mid].t;
+
+                if (midTime < targetTime)
+                {
+                    low = mid + 1;
+                }
+                else
+                {
+                    high = mid - 1;
+                }
+            }
+
+            // After the loop, 'low' is the index of the first keyframe >= targetTime
+            if (low < track.keyframes.Count)
+            {
+                segmentIndex = low;
+            }
+            else
+            {
+                segmentIndex = -1; // No segment found with time >= targetTime
+            }
         }
 
         private static Vector3 ToEulerAngles(Quaternion q1)
@@ -107,6 +246,19 @@ namespace VTReplayConverter
         private static float NormalizeAngle(float angle)
         {
             return angle % 360;
+        }
+
+        public static Vector3 Slerp(Vector3 from, Vector3 to, float t)
+        {
+            t = Mathf.Clamp01(t);
+
+            float dot = Vector3.Dot(from.normalized, to.normalized);
+            dot = Mathf.Clamp(dot, -1.0f, 1.0f);
+
+            float theta = Mathf.Acos(dot) * t;
+            Vector3 relativeVec = (to - from * dot).normalized;
+
+            return from * Mathf.Cos(theta) + relativeVec * Mathf.Sin(theta);
         }
 
     }

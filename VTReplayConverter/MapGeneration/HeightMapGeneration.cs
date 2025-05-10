@@ -15,20 +15,21 @@ namespace VTReplayConverter
     //Thank you Nebriv
     public class HeightMapGeneration
     {
-
-        public Bitmap gameHeightmap;
-
         public static void ConvertHeightMap(string heightMapPath, string configPath)
         {
             Bitmap heightMap = FileDecoder.DecodeImage(heightMapPath);
             ConfigNode configFile = FileDecoder.LoadFromFile(configPath);
             int mapSize = configFile.GetValue<int>("mapSize");
-            string scenarioName = configFile.GetValue<string>("scenarioName");
-            scenarioName = scenarioName.Replace(' ', '_');
-            scenarioName = scenarioName.Replace('/', '_');
+
+            Vector3 mapOffset = Vector3.zero;
+
+            if (configFile.HasValue("mapOffset"))
+            {
+                mapOffset = configFile.GetValue<Vector3>("mapOffset");
+            }
 
             SaveHeightMap(heightMap, mapSize);
-            GenerateMapXML(heightMap, mapSize, true);
+            GenerateMapXML(heightMap, mapSize, mapOffset);
         }
 
   
@@ -78,54 +79,23 @@ namespace VTReplayConverter
             
         }
 
-        private static void GenerateMapXML(Bitmap texture, int mapSize, bool customMap)
+        private static void GenerateMapXML(Bitmap texture, int mapSize, Vector3 mapOffset)
         {
 
             //Console.WriteLine("Generating custom XML");
 
             GeoLocation[] geoLocations = new GeoLocation[4];
 
-            if (customMap)
-            {
-                geoLocations = GenerateCoords(mapSize);
-            }
-            else
-            {
-                GeoLocation bottomLeft = new GeoLocation
-                {
-                    Latitude = 53.94148616349887,
-                    Longitude = -166.40063465537224
-                };
-
-                GeoLocation bottomRight = new GeoLocation
-                {
-                    Latitude = 53.94544,
-                    Longitude = -165.426
-                };
-
-                GeoLocation topRight = new GeoLocation
-                {
-                    Latitude = 54.5124234999398,
-                    Longitude = -165.41245674515972
-                };
-
-               GeoLocation topLeft = new GeoLocation
-                {
-                    Latitude = 54.51646078127723,
-                    Longitude = -166.40063465537224
-                };
-
-                geoLocations[0] = bottomLeft;
-                geoLocations[1] = bottomRight;
-                geoLocations[2] = topRight;
-                geoLocations[3] = topLeft;
-
-            }
+           
+            geoLocations = GenerateCoords(mapSize, mapOffset);
+            
+           
 
             int endian = 1;
             int width = texture.Width;
             int height = texture.Height;
 
+            //TODO change values for Akutan Heightmap
             float altFactor = 0.0924f;
             float altOffset = -80f;
 
@@ -160,26 +130,26 @@ namespace VTReplayConverter
         }
 
 
-        private static GeoLocation[] GenerateCoords(int mapSize)
+        private static GeoLocation[] GenerateCoords(int mapSize, Vector3 mapOffset)
         {
             GeoLocation[] geoLocations = new GeoLocation[4];
 
 
             GeoLocation bottomLeft = new GeoLocation();
-            bottomLeft.Longitude = 0;
-            bottomLeft.Latitude = 0;
+            bottomLeft.Longitude = ACMIUtils.WorldPositionToGPSCoords(-mapOffset).x;
+            bottomLeft.Latitude = ACMIUtils.WorldPositionToGPSCoords(-mapOffset).y;
 
             GeoLocation bottomRight = new GeoLocation();
-            bottomRight.Longitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(0, 0, mapSize)).x;
-            bottomRight.Latitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(0, 0, mapSize)).y;
+            bottomRight.Longitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(0, 0, mapSize) - mapOffset).x;
+            bottomRight.Latitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(0, 0, mapSize) - mapOffset).y;
 
             GeoLocation topLeft = new GeoLocation();
-            topLeft.Longitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(mapSize, 0, 0)).x;
-            topLeft.Latitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(mapSize, 0, 0)).y;
+            topLeft.Longitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(mapSize, 0, 0) - mapOffset).x;
+            topLeft.Latitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(mapSize, 0, 0) - mapOffset).y;
 
             GeoLocation topRight = new GeoLocation();
-            topRight.Longitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(mapSize, 0, mapSize)).x;
-            topRight.Latitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(mapSize, 0, mapSize)).y;
+            topRight.Longitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(mapSize, 0, mapSize) - mapOffset).x;
+            topRight.Latitude = ACMIUtils.WorldPositionToGPSCoords(new Vector3(mapSize, 0, mapSize) - mapOffset).y;
 
             geoLocations[0] = bottomLeft;
             geoLocations[1] = bottomRight;
@@ -203,29 +173,6 @@ namespace VTReplayConverter
             }
         }
 
-        public static GeoLocation FindPointAtDistanceFrom2(GeoLocation source, double bearing, double range)
-        {
-            const double EarthRadius = 6378137.0;
-            const double DegreesToRadians = 0.0174532925;
-            const double RadiansToDegrees = 57.2957795;
-
-            double latA = source.Latitude * DegreesToRadians;
-            double lonA = source.Longitude * DegreesToRadians;
-            double angularDistance = range * 1000 / EarthRadius;
-            double trueCourse = bearing * DegreesToRadians;
-
-            double lat = Math.Asin(Math.Sin(latA) * Math.Cos(angularDistance) + Math.Cos(latA) * Math.Sin(angularDistance) * Math.Cos(trueCourse));
-
-            double dlon = Math.Atan2(Math.Sin(trueCourse) * Math.Sin(angularDistance) * Math.Cos(latA), Math.Cos(angularDistance) - Math.Sin(latA) * Math.Sin(lat));
-            double lon = ((lonA + dlon + Math.PI) % (Math.PI * 2)) - Math.PI;
-
-            return new GeoLocation
-            {
-                Latitude = lat * RadiansToDegrees,
-                Longitude = lon * RadiansToDegrees
-            };
-
-        }
     }
     
 }

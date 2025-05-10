@@ -33,9 +33,10 @@ namespace VTReplayConverter
 
 		public static void ClearSerializedReplay()
 		{
-			kfBuffer = new byte[1024]; ;
-			lz4Buffer = new byte[1]; ;
-			decompressBuffer = new byte[1]; ;
+			kfBuffer = new byte[1024];
+			lz4Buffer = new byte[1];
+			decompressBuffer = new byte[1];
+			
 			ReplaySerializer.serializedReplay = null;
 		}
 

@@ -47,6 +47,11 @@ namespace VTReplayConverter
 			this.keyframes.Add(kf);
 		}
 
+		public void Remove(T kf)
+        {
+			this.keyframes.Remove(kf);
+        }
+
 		public int Count
 		{
 			get

@@ -13,5 +13,8 @@ namespace VTReplayConverter
 		public Type keyframeType;
 
 		public ReplaySerializer.IReplaySerializable metadata;
+
+		//VTReplayConvert Stuff
+		public bool initalized = false;
 	}
 }

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1ABBF041-4A11-428E-AF05-D87DC13A1738}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>VTReplayConverter</RootNamespace>
     <AssemblyName>VTReplayConverter</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -67,6 +67,9 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -79,12 +82,18 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -102,6 +111,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ACMI\ACMIAnimation.cs" />
+    <Compile Include="ACMI\ACMILoadingBar.cs" />
+    <Compile Include="ACMI\ACMIObjects.cs" />
     <Compile Include="ACMI\ACMIUtils.cs" />
     <Compile Include="ConsoleApp\Attributes.cs" />
     <Compile Include="ConsoleApp\CommandHandler.cs" />
@@ -123,10 +134,17 @@
     <Compile Include="ReplayRecorder\ReplaySerializer.cs" />
     <Compile Include="ReplayRecorder\Track.cs" />
     <Compile Include="ACMI\VTACMI.cs" />
+    <Compile Include="VTRConverterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VTRConverterForm.Designer.cs">
+      <DependentUpon>VTRConverterForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Resources\Squares Bold Free.otf" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -142,6 +160,17 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DLLs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VTRConverterForm.resx">
+      <DependentUpon>VTRConverterForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\x64\Debug\Images\tex_editorWindow_noAlpha_medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SquareBoldFont.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
