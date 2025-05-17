@@ -13,7 +13,7 @@ namespace VTReplayConverter
     internal class Program
     {
         public const bool ConsoleMode = false;
-        public const float BulletPollRate = 0.25f;
+        public const float BulletPollRate = 0.35f;
         public const bool ConvertBullets = false;
         public static string VTReplaysPath;
         public static string AcmiSavePath;

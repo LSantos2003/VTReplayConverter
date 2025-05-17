@@ -31,8 +31,8 @@ namespace VTReplayConverter
 
             progressBar1.Visible = false;
             ProgressText.Visible = false;
-
-            includeEW.Checked = VTACMI.IncludeEW;
+            WarningLabel.Visible = false;
+            includeEW.Checked = !VTACMI.IncludeEW;
 
             CreateReplayList();
             this.TemplateButton.Visible = false;
@@ -61,7 +61,7 @@ namespace VTReplayConverter
         {
             progressBar1.Visible = Program.ConvertingFile;
             ProgressText.Visible = Program.ConvertingFile;
-
+            WarningLabel.Visible = Program.ConvertingFile;
             int progress = ACMILoadingBar.GetKeyFrameProgress();
             this.progressBar1.Value = progress;
             this.ProgressText.Text = $"{this.progressTextPrefix}\nProgress: {progress}%\nKeyframes: {ACMILoadingBar.currentKeyFrameProgress}/{ACMILoadingBar.maxKeyFrameCount}";
@@ -74,11 +74,12 @@ namespace VTReplayConverter
             if (Program.ConvertingFile)
                 return;
 
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "vtr files (*.vtr)|*.vtr";
 
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            if (fileDialog.ShowDialog() == DialogResult.OK)
             {
-                string folderPath = folderBrowserDialog.SelectedPath;
+                string folderPath = Path.GetDirectoryName(fileDialog.FileName);
                 string folderName = Path.GetFileName(folderPath);
 
                 this.progressTextPrefix = $"Converting {folderName}";
@@ -88,7 +89,7 @@ namespace VTReplayConverter
 
         private void includeEW_CheckedChanged(object sender, EventArgs e)
         {
-            VTACMI.IncludeEW = includeEW.Checked;
+            VTACMI.IncludeEW = !includeEW.Checked;
         }
 
         private void CreateReplayList()
@@ -120,6 +121,7 @@ namespace VTReplayConverter
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.MouseOverBackColor = templateButton.FlatAppearance.MouseOverBackColor;
             button.FlatAppearance.MouseDownBackColor = templateButton.FlatAppearance.MouseDownBackColor;
+            button.Font = templateButton.Font;
             button.BringToFront();
 
             button.MouseDown += (sender, EventArgs) => { OpenReplay(sender, EventArgs, button, replayPath); };
@@ -129,9 +131,6 @@ namespace VTReplayConverter
 
         private void OpenReplay(object sender, MouseEventArgs args, Button replayButton, string replayPath)
         {
-            if (Program.ConvertingFile)
-                return;
-
             
             string folderPath = replayPath;
             string folderName = Path.GetFileName(folderPath);
@@ -144,7 +143,7 @@ namespace VTReplayConverter
             if (leftClick)
             {
                 this.progressTextPrefix = $"Opening {folderName}";
-                CommandHandler.OpenFileFromPath(folderPath, folderName, true, false, replayButton, false);
+                CommandHandler.OpenFileFromPath(folderPath, folderName, true, folderName.Contains("Autosave"), replayButton, false);
             }else if (rightClick)
             {
                 this.progressTextPrefix = $"Re-Converting {folderName}";
@@ -170,6 +169,11 @@ namespace VTReplayConverter
         }
 
         private void ProgressText_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }

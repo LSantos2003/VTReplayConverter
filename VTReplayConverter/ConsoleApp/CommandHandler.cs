@@ -327,8 +327,8 @@ namespace VTReplayConverter
 
             string[] vtrPaths = Directory.GetFiles(Program.VTReplaysPath, "*.*vtr", SearchOption.AllDirectories);
 
-            Console.WriteLine("-----------------------");
-            Console.WriteLine("Converting all VTR files\n");
+           // Console.WriteLine("-----------------------");
+           // Console.WriteLine("Converting all VTR files\n");
 
             int staggerMilliseconds = 500;
             var tasks = new List<Task>();
@@ -347,7 +347,7 @@ namespace VTReplayConverter
 
                 tasks.Add(Task.Run(async () =>
                 {
-                    Console.WriteLine("-----------------------");
+                   // Console.WriteLine("-----------------------");
                     replayButtonDict[Path.GetDirectoryName(vtrPath)].BackColor = VTRConverterForm.ReplayNotConvertedColor;
                     string folderName = Path.GetFileName(folderPath);
                     string savePath = Path.Combine(Program.AcmiSavePath, $"{folderName}.acmi");
@@ -363,8 +363,8 @@ namespace VTReplayConverter
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
 
-            Console.WriteLine($"{vtrPaths.Length} Files converted!");
-            Console.WriteLine($"Total conversion time: {elapsedMs / 1000f} seconds\n");
+           // Console.WriteLine($"{vtrPaths.Length} Files converted!");
+           // Console.WriteLine($"Total conversion time: {elapsedMs / 1000f} seconds\n");
             ACMILoadingBar.ResetBar();
             Program.ConvertingFile = false;
         }

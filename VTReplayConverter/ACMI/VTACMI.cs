@@ -25,7 +25,7 @@ namespace VTReplayConverter
             this.recorder = new ReplayRecorder();
             this.recorder.Awake();
             ReplaySerializer.LoadFromFile(vtrPath, this.recorder);
-            this.recorder.Reset();
+            ReplaySerializer.ClearSerializedReplay();
 
         }
 
@@ -33,7 +33,7 @@ namespace VTReplayConverter
         {
             VTACMI converter = new VTACMI(vtrPath);
             converter.ConvertFromPath(vtrPath, tacviewSavePath);
-
+            converter.recorder.Reset();
             ACMILoadingBar.ResetBar();
         }
 
@@ -46,7 +46,7 @@ namespace VTReplayConverter
             semaphore.Release(); // Release the resource
 
             converter.ConvertFromPath(vtrPath, tacviewSavePath);
-
+            converter.recorder.Reset();
         }
 
         public void ConvertFromPath(string vtrPath, string tacviewSavePath)
@@ -163,7 +163,7 @@ namespace VTReplayConverter
 
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
-            this.recorder.Reset();
+
             Console.WriteLine($"Final File Size: {fileSize.ToString("0.00")} MB");
             Console.WriteLine($"Finished converting {folderName}: {elapsedMs/1000f} seconds");
             
@@ -340,7 +340,7 @@ namespace VTReplayConverter
             string colorString = GetColor((ReplayActorEntityTypes)entity.entityType);
             string coalitionString = GetCoalition((ReplayActorEntityTypes)entity.entityType);
 
-            string builtString = $"{updateString},Name={entity.metaData.label},Type={typeString},LongName={entity.metaData.label},ShortName={entity.metaData.label},Color={colorString},Shape={shapeString}{coalitionString}";
+            string builtString = $"{updateString},Name={entity.metaData.label},Type={typeString},LongName={entity.metaData.label},ShortName={entity.metaData.label}{colorString},Shape={shapeString}{coalitionString}";
 
             return builtString;
         }
@@ -388,6 +388,12 @@ namespace VTReplayConverter
                 var entity = this.recorder.GetEntity(metaData.actorId);
 
                 string tacviewString = BuildRadarLockString(customTrack, entity, t);
+                streamWriter.WriteLine(tacviewString);
+            }else if(customTrack.keyframeType == typeof(VTRPooledProjectile.PooledProjectileKeyframe))
+            {
+                var metaData = (VTRPooledProjectile.PooledProjectileMetadata)customTrack.metadata;
+                
+                string tacviewString = BuildPooledUpdateString(customTrack, t);
                 streamWriter.WriteLine(tacviewString);
             }
         }
@@ -445,6 +451,36 @@ namespace VTReplayConverter
             return string.Empty;
         }
 
+        private string BuildPooledUpdateString(CustomTrack customTrack, float t)
+        {
+            int segmentIndex;
+            ACMIUtils.FindSegment<ReplayRecorder.Keyframe>(customTrack, out segmentIndex, t);
+
+            if (segmentIndex >= 0)
+            {
+                string pooledHex = ACMIUtils.GetProjectileHex(customTrack.trackId);
+                VTRPooledProjectile.PooledProjectileKeyframe pooledProjectileKeyframe = (VTRPooledProjectile.PooledProjectileKeyframe)customTrack.keyframes[segmentIndex];
+
+                Vector3 globalPos = pooledProjectileKeyframe.globalPos;
+                Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(globalPos);
+                int active = pooledProjectileKeyframe.active ? 1 : 0;
+                string typeString = "Rocket";
+                string shapeString = "Rocket.Hydra 70.obj";
+
+                string tacviewString = $"{pooledHex},T={gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z},Visible={active}";
+                if (!customTrack.initalized)
+                {
+                    tacviewString += $",Name=Rocket,Shape={shapeString},Type={typeString},Color=Orange";
+                    customTrack.initalized = true;
+                }
+
+
+                return tacviewString;
+
+            }
+
+            return string.Empty;
+        }
         private string BuildRadarLockString(CustomTrack customTrack, ReplayRecorder.ReplayEntity entity, float t)
         {
             int segmentIndex;
@@ -464,6 +500,8 @@ namespace VTReplayConverter
 
             return string.Empty;
         }
+
+
 
         private string GetType(ReplayActorEntityTypes entityType)
         {
@@ -551,16 +589,16 @@ namespace VTReplayConverter
                 case ReplayActorEntityTypes.GroundA:
                 case ReplayActorEntityTypes.SeaA:
                 case ReplayActorEntityTypes.ChopperA:
-                    colorString = "Blue";
+                    colorString = ",Color=Blue";
                     break;
                 case ReplayActorEntityTypes.AirB:
                 case ReplayActorEntityTypes.GroundB:
                 case ReplayActorEntityTypes.SeaB:
                 case ReplayActorEntityTypes.ChopperB:
-                    colorString = "Red";
+                    colorString = ",Color=Red";
                     break;
                 case ReplayActorEntityTypes.Missile:
-                    colorString = "Orange";
+                    colorString = ",Color=Orange";
                     break;
                 default:
                     colorString = "Orange";
