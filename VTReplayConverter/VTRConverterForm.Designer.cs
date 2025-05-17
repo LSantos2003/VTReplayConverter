@@ -41,6 +41,8 @@
             this.OpenTacviewFolder = new System.Windows.Forms.Button();
             this.OpenReplayFolder = new System.Windows.Forms.Button();
             this.WarningLabel = new System.Windows.Forms.Label();
+            this.versionLabel = new System.Windows.Forms.Label();
+            this.updateLabel = new System.Windows.Forms.Label();
             this.ReplayButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,7 +56,6 @@
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar1.TabIndex = 1;
             this.progressBar1.Value = 25;
-            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
             // 
             // timer1
             // 
@@ -88,7 +89,6 @@
             this.ProgressText.TabIndex = 4;
             this.ProgressText.Tag = "ProgressText";
             this.ProgressText.Text = "Converting All\r\nProgress: 69%\r\nKeyframes 1123/123010\r\n";
-            this.ProgressText.Click += new System.EventHandler(this.ProgressText_Click);
             // 
             // OpenFolder
             // 
@@ -200,12 +200,39 @@
             this.WarningLabel.TabIndex = 12;
             this.WarningLabel.Text = "CANNOT OPEN REPLAYS WHILE CONVERTING";
             // 
+            // versionLabel
+            // 
+            this.versionLabel.AutoSize = true;
+            this.versionLabel.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.versionLabel.ForeColor = System.Drawing.Color.Gainsboro;
+            this.versionLabel.Location = new System.Drawing.Point(649, 419);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(139, 19);
+            this.versionLabel.TabIndex = 13;
+            this.versionLabel.Text = "Version 1.0.0";
+            this.versionLabel.Click += new System.EventHandler(this.versionLabel_Click);
+            // 
+            // updateLabel
+            // 
+            this.updateLabel.AutoSize = true;
+            this.updateLabel.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.updateLabel.ForeColor = System.Drawing.Color.Silver;
+            this.updateLabel.Location = new System.Drawing.Point(609, 400);
+            this.updateLabel.Name = "updateLabel";
+            this.updateLabel.Size = new System.Drawing.Size(179, 19);
+            this.updateLabel.TabIndex = 14;
+            this.updateLabel.Text = "Update Available!";
+            this.updateLabel.Visible = false;
+            this.updateLabel.Click += new System.EventHandler(this.updateLabel_Click);
+            // 
             // VTRConverterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(33)))), ((int)(((byte)(46)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.updateLabel);
+            this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.WarningLabel);
             this.Controls.Add(this.OpenReplayFolder);
             this.Controls.Add(this.OpenTacviewFolder);
@@ -238,5 +265,7 @@
         private System.Windows.Forms.Button OpenTacviewFolder;
         private System.Windows.Forms.Button OpenReplayFolder;
         private System.Windows.Forms.Label WarningLabel;
+        private System.Windows.Forms.Label versionLabel;
+        private System.Windows.Forms.Label updateLabel;
     }
 }

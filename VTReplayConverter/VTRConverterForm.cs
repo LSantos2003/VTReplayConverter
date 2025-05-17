@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Squirrel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,6 +15,8 @@ namespace VTReplayConverter
 {
     public partial class VTRConverterForm : Form
     {
+        UpdateManager uManager;
+
         string progressTextPrefix = "Progress";
 
         Dictionary<string, Button> replayButtonDict = new Dictionary<string, Button>();
@@ -23,6 +26,18 @@ namespace VTReplayConverter
         public VTRConverterForm()
         {
             InitializeComponent();
+
+            this.uManager = new UpdateManager(@"https://github.com/LSantos2003/VTReplayConverter");
+
+            this.versionLabel.Text = uManager.CurrentlyInstalledVersion().ToString();
+        }
+
+        private async Task CheckForUpdates()
+        {
+            using(var manager = new UpdateManager(@"https://github.com/LSantos2003/VTReplayConverter"))
+            {
+                await manager.UpdateApp();
+            }
         }
 
         private void VTRConverterForm_Load(object sender, EventArgs e)
@@ -44,7 +59,7 @@ namespace VTReplayConverter
             if (Program.ConvertingFile)
                 return;
 
-            this.progressTextPrefix = "Re-Converting All Replays";
+            this.progressTextPrefix = "Re -Converting All Replays";
             CommandHandler.ConvertAll(this.replayButtonDict, true);
         }
 
@@ -163,19 +178,25 @@ namespace VTReplayConverter
             Process.Start(Program.VTReplaysPath);
         }
 
-        private void progressBar1_Click(object sender, EventArgs e)
+        private async void versionLabel_Click(object sender, EventArgs e)
         {
+            var updateInfo = await uManager.CheckForUpdate();
 
+            if(updateInfo.ReleasesToApply.Count > 0)
+            {
+                this.updateLabel.Visible = true;
+            }
+            else
+            {
+                this.updateLabel.Visible = false;
+            }
         }
 
-        private void ProgressText_Click(object sender, EventArgs e)
+        private async void updateLabel_Click(object sender, EventArgs e)
         {
+            await uManager.UpdateApp();
 
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
+            MessageBox.Show("Succesfully Updated Baby!");
         }
     }
 }
