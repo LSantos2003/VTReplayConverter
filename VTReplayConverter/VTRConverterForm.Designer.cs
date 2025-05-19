@@ -44,6 +44,7 @@
             this.WarningLabel = new System.Windows.Forms.Label();
             this.versionLabel = new System.Windows.Forms.Label();
             this.updateButton = new System.Windows.Forms.Button();
+            this.refreshReplaysButton = new System.Windows.Forms.Button();
             this.ReplayButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -197,9 +198,10 @@
             this.WarningLabel.ForeColor = System.Drawing.Color.DarkRed;
             this.WarningLabel.Location = new System.Drawing.Point(371, 354);
             this.WarningLabel.Name = "WarningLabel";
-            this.WarningLabel.Size = new System.Drawing.Size(369, 19);
+            this.WarningLabel.Size = new System.Drawing.Size(389, 38);
             this.WarningLabel.TabIndex = 12;
-            this.WarningLabel.Text = "CANNOT OPEN REPLAYS WHILE CONVERTING";
+            this.WarningLabel.Text = "CANNOT OPEN REPLAYS OR UPDATE PROGRAM \r\nWHILE CONVERTING";
+            this.WarningLabel.Click += new System.EventHandler(this.WarningLabel_Click);
             // 
             // versionLabel
             // 
@@ -227,12 +229,28 @@
             this.updateButton.Visible = false;
             this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
             // 
+            // refreshReplaysButton
+            // 
+            this.refreshReplaysButton.BackColor = System.Drawing.Color.Silver;
+            this.refreshReplaysButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.refreshReplaysButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.refreshReplaysButton.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.refreshReplaysButton.Location = new System.Drawing.Point(580, 112);
+            this.refreshReplaysButton.Name = "refreshReplaysButton";
+            this.refreshReplaysButton.Size = new System.Drawing.Size(178, 44);
+            this.refreshReplaysButton.TabIndex = 15;
+            this.refreshReplaysButton.Text = "REFRESH REPLAYS";
+            this.refreshReplaysButton.UseVisualStyleBackColor = false;
+            this.refreshReplaysButton.Visible = false;
+            this.refreshReplaysButton.Click += new System.EventHandler(this.refreshReplaysButton_Click);
+            // 
             // VTRConverterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(33)))), ((int)(((byte)(46)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.refreshReplaysButton);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.WarningLabel);
@@ -270,5 +288,6 @@
         private System.Windows.Forms.Label WarningLabel;
         private System.Windows.Forms.Label versionLabel;
         private System.Windows.Forms.Button updateButton;
+        private System.Windows.Forms.Button refreshReplaysButton;
     }
 }

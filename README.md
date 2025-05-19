@@ -1,5 +1,5 @@
 TODO List:
-- Figure out how to configure folders/setup an installer
 - Model Swap Missiles
+- Model Swap with VTOL VR models?
 - Handle/Calibrate Akutan
 - Display SAM Threat Spheres

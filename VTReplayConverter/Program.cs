@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Windows.Forms;
 using static System.Environment;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace VTReplayConverter
 {
     internal class Program
     {
+        public static string AssemblyVersion;
+
         public const bool ConsoleMode = false;
         public const float BulletPollRate = 0.35f;
         public const bool ConvertBullets = true;
@@ -27,13 +31,26 @@ namespace VTReplayConverter
 
         public static bool ConvertingFile = false;
 
+        public static bool IsDebugMode
+        {
+            get
+            {
+                #if DEBUG
+                     return true;
+                #else
+                     return false;
+                #endif
+            }
+        }
+
+
         [STAThreadAttribute]
         static void Main(string[] args)
         {
 
             SetUpFilePaths();
             SetUpMeshes();
-
+            DeleteOldVersions();
             ACMIObjects.InitilizeUnitDict();
 
             if (ConsoleMode)
@@ -82,6 +99,7 @@ namespace VTReplayConverter
         {
             if (!Directory.Exists(TacviewMeshPath))
             {
+                MessageBox.Show("Tacview Mesh Path not found, is Tacview installed?");
                 return;
             }
 
@@ -100,6 +118,11 @@ namespace VTReplayConverter
 
         }
 
+        private static void DeleteOldVersions()
+        {
+            string assemblyVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+            AssemblyVersion = assemblyVersion;
+        }
         public static void EndProgram()
         {
             ProgramRunning = false;

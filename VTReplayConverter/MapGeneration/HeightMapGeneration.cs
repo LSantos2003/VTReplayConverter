@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ namespace VTReplayConverter
             if (!Directory.Exists(Program.TacviewTerrainPath))
             {
                 Console.WriteLine("Tacview Terrain Path not found, is Tacview installed?");
+                MessageBox.Show("Tacview Terrain Path not found, is Tacview installed?");
                 return;
             }
             Bitmap heightMap = FileDecoder.DecodeImage(heightMapPath);

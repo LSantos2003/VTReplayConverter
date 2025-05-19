@@ -24,6 +24,8 @@ namespace VTReplayConverter
 
         public static Color ReplayNotConvertedColor = Color.Crimson;
         public static Color ReplayConvertedColor = Color.DarkOliveGreen;
+
+       
         public VTRConverterForm()
         {
             InitializeComponent();
@@ -42,12 +44,22 @@ namespace VTReplayConverter
             CreateReplayList();
             this.TemplateButton.Visible = false;
 
-            this.uManager = await UpdateManager.GitHubUpdateManager(@"https://github.com/LSantos2003/VTReplayConverter");
-            if (this.uManager.CurrentlyInstalledVersion() != null)
+            string assemblyVersion = Program.AssemblyVersion;
+            this.versionLabel.Text = "Version:" + assemblyVersion;
+            try
             {
-                this.versionLabel.Text = "Version:"+this.uManager.CurrentlyInstalledVersion().ToString();
+                this.uManager = await UpdateManager.GitHubUpdateManager(@"https://github.com/LSantos2003/VTReplayConverter");
+            }catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            if (this.uManager != null && this.uManager.CurrentlyInstalledVersion() != null)
+            {
                 this.CheckForUpdate();
             }
+
+            this.refreshReplaysButton.Visible = Program.IsDebugMode;
 
         }
 
@@ -106,6 +118,11 @@ namespace VTReplayConverter
 
         private void CreateReplayList()
         {
+            if (!Directory.Exists(Program.VTReplaysPath))
+            {
+                MessageBox.Show("WARNING: No VTOL VR Tactical Replay Files detected. Go play some VTOL VR!");
+            }
+
             string[] replayPaths = Directory.GetDirectories(Program.VTReplaysPath);
 
             int replayButtonCount = 0;
@@ -139,6 +156,14 @@ namespace VTReplayConverter
             button.MouseDown += (sender, EventArgs) => { OpenReplay(sender, EventArgs, button, replayPath); };
 
             this.replayButtonDict[replayPath] = button;
+        }
+
+        private void refreshReplaysButton_Click(object sender, EventArgs e)
+        {
+            foreach(var button in this.replayButtonDict)
+            {
+                button.Value.BackColor = ACMIUtils.IsReplayConverted(button.Key) ? ReplayConvertedColor : ReplayNotConvertedColor;
+            }
         }
 
         private void OpenReplay(object sender, MouseEventArgs args, Button replayButton, string replayPath)
@@ -194,8 +219,13 @@ namespace VTReplayConverter
         {
             try
             {
+                if (Program.ConvertingFile)
+                    return;
+
                 this.updateButton.Text = "Updating";
                 await uManager.UpdateApp();
+                Application.Restart();
+                Environment.Exit(0);
             }
             catch (Exception ex)
             {
@@ -203,6 +233,11 @@ namespace VTReplayConverter
             }
 
             MessageBox.Show("Update succesful! Please restart application");
+        }
+
+        private void WarningLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
