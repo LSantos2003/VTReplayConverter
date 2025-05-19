@@ -15,8 +15,15 @@ namespace VTReplayConverter
     //Thank you Nebriv
     public class HeightMapGeneration
     {
+        public static string HeightMapLocation { get { return Path.Combine(Program.TacviewTerrainPath, "VTOL_VR_CUSTOM_MAP.raw"); } }
+        public static string XmlLocation { get { return Path.Combine(Program.TacviewTerrainPath, $"CustomHeightmapList.xml"); } }
         public static void ConvertHeightMap(string heightMapPath, string configPath)
         {
+            if (!Directory.Exists(Program.TacviewTerrainPath))
+            {
+                Console.WriteLine("Tacview Terrain Path not found, is Tacview installed?");
+                return;
+            }
             Bitmap heightMap = FileDecoder.DecodeImage(heightMapPath);
             ConfigNode configFile = FileDecoder.LoadFromFile(configPath);
             int mapSize = configFile.GetValue<int>("mapSize");
@@ -39,21 +46,20 @@ namespace VTReplayConverter
             ConvertPngToRaw(heightMap);
 
 
-            string outFile = Path.Combine(Program.TacviewTerrainPath, "VTOL_VR_CUSTOM_MAP.raw");
+            string outFile = HeightMapLocation;
 
             Console.WriteLine("Height Map Info:");
             Console.WriteLine($"     Height: {heightMap.Height} Width: {heightMap.Width}");
-            //Console.WriteLine($"     Latitude {0}, Longitude {0}");
             Console.WriteLine($"     Map Size {mapSize}");
             Console.WriteLine($"     Height Map Location: {outFile}");
 
-            //File.WriteAllBytes(outFile, rawBytes);
+
 
         }
 
         static void ConvertPngToRaw(Bitmap bitmap)
         {
-            string outFile = Path.Combine(Program.TacviewTerrainPath, "VTOL_VR_CUSTOM_MAP.raw");
+            string outFile = HeightMapLocation;
 
             int width = bitmap.Width;
             int height = bitmap.Height;
@@ -101,7 +107,7 @@ namespace VTReplayConverter
 
             string projection = "Quad";
 
-            string xmlSavePath = Path.Combine(Program.TacviewTerrainPath, $"CustomHeightmapList.xml");
+            string xmlSavePath = XmlLocation;
             XDocument doc = new XDocument(new XElement("Resources", new XElement("CustomHeightmapList", new XElement("CustomHeightmap",
                                                 new XElement("File", $"VTOL_VR_CUSTOM_MAP.raw"),
                                                 new XElement("BigEndian", endian.ToString()),

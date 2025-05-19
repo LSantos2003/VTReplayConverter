@@ -14,7 +14,7 @@ namespace VTReplayConverter
     {
         public const bool ConsoleMode = false;
         public const float BulletPollRate = 0.35f;
-        public const bool ConvertBullets = false;
+        public const bool ConvertBullets = true;
         public static string VTReplaysPath;
         public static string AcmiSavePath;
         public static string TacviewTerrainPath;
@@ -62,7 +62,7 @@ namespace VTReplayConverter
 
             string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string strWorkPath = System.IO.Path.GetDirectoryName(strExeFilePath);
-            AcmiSavePath = Path.Combine(strWorkPath, "TACVIEW");
+            AcmiSavePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VTReplayConverter"), "TACVIEW SAVES");
 
             ObjectConverterPath = Path.Combine(strWorkPath, "units.txt");
             if (!Directory.Exists(AcmiSavePath))

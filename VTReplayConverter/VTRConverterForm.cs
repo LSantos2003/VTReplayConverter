@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,21 +27,10 @@ namespace VTReplayConverter
         public VTRConverterForm()
         {
             InitializeComponent();
-
-            this.uManager = new UpdateManager(@"https://github.com/LSantos2003/VTReplayConverter");
-
-            this.versionLabel.Text = uManager.CurrentlyInstalledVersion().ToString();
         }
 
-        private async Task CheckForUpdates()
-        {
-            using(var manager = new UpdateManager(@"https://github.com/LSantos2003/VTReplayConverter"))
-            {
-                await manager.UpdateApp();
-            }
-        }
 
-        private void VTRConverterForm_Load(object sender, EventArgs e)
+        private async void VTRConverterForm_Load(object sender, EventArgs e)
         {
             this.MaximumSize = this.Size;
 
@@ -51,6 +41,13 @@ namespace VTReplayConverter
 
             CreateReplayList();
             this.TemplateButton.Visible = false;
+
+            this.uManager = await UpdateManager.GitHubUpdateManager(@"https://github.com/LSantos2003/VTReplayConverter");
+            if (this.uManager.CurrentlyInstalledVersion() != null)
+            {
+                this.versionLabel.Text = "Version:"+this.uManager.CurrentlyInstalledVersion().ToString();
+                this.CheckForUpdate();
+            }
 
         }
 
@@ -178,25 +175,34 @@ namespace VTReplayConverter
             Process.Start(Program.VTReplaysPath);
         }
 
-        private async void versionLabel_Click(object sender, EventArgs e)
+        private async void CheckForUpdate()
         {
-            var updateInfo = await uManager.CheckForUpdate();
+            var updateInfo = await this.uManager.CheckForUpdate();
 
-            if(updateInfo.ReleasesToApply.Count > 0)
+            if (updateInfo.ReleasesToApply.Count > 0)
             {
-                this.updateLabel.Visible = true;
+                this.updateButton.Visible = true;
             }
             else
             {
-                this.updateLabel.Visible = false;
+                this.updateButton.Visible = false;
             }
         }
 
-        private async void updateLabel_Click(object sender, EventArgs e)
-        {
-            await uManager.UpdateApp();
 
-            MessageBox.Show("Succesfully Updated Baby!");
+        private async void updateButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                this.updateButton.Text = "Updating";
+                await uManager.UpdateApp();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            MessageBox.Show("Update succesful! Please restart application");
         }
     }
 }

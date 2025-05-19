@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>VTReplayConverter</id>
+    <version>0.0.0</version>
+    <title>VT Replay Converter</title>
+    <authors>C-137</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>http://project_url_here_or_delete_this_line/</projectUrl>
+    <description>Converts VTOL VR Tactical Replay Files to Tacview ACMI Files</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>2021</copyright>
+    <tags>Tag1 Tag2</tags>
+  </metadata>
+
+  <files>
+	<file src="bin\x64\Release\**" target="lib\net45"/>
+  </files>
+</package>

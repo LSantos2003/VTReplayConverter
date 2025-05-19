@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VTRConverterForm));
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.ReConvertAll = new System.Windows.Forms.Button();
@@ -42,7 +43,7 @@
             this.OpenReplayFolder = new System.Windows.Forms.Button();
             this.WarningLabel = new System.Windows.Forms.Label();
             this.versionLabel = new System.Windows.Forms.Label();
-            this.updateLabel = new System.Windows.Forms.Label();
+            this.updateButton = new System.Windows.Forms.Button();
             this.ReplayButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -210,20 +211,21 @@
             this.versionLabel.Size = new System.Drawing.Size(139, 19);
             this.versionLabel.TabIndex = 13;
             this.versionLabel.Text = "Version 1.0.0";
-            this.versionLabel.Click += new System.EventHandler(this.versionLabel_Click);
             // 
-            // updateLabel
+            // updateButton
             // 
-            this.updateLabel.AutoSize = true;
-            this.updateLabel.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.updateLabel.ForeColor = System.Drawing.Color.Silver;
-            this.updateLabel.Location = new System.Drawing.Point(609, 400);
-            this.updateLabel.Name = "updateLabel";
-            this.updateLabel.Size = new System.Drawing.Size(179, 19);
-            this.updateLabel.TabIndex = 14;
-            this.updateLabel.Text = "Update Available!";
-            this.updateLabel.Visible = false;
-            this.updateLabel.Click += new System.EventHandler(this.updateLabel_Click);
+            this.updateButton.BackColor = System.Drawing.Color.Silver;
+            this.updateButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.updateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.updateButton.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.updateButton.Location = new System.Drawing.Point(605, 384);
+            this.updateButton.Name = "updateButton";
+            this.updateButton.Size = new System.Drawing.Size(183, 32);
+            this.updateButton.TabIndex = 14;
+            this.updateButton.Text = "UPDATE AVAILABLE!";
+            this.updateButton.UseVisualStyleBackColor = false;
+            this.updateButton.Visible = false;
+            this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
             // 
             // VTRConverterForm
             // 
@@ -231,7 +233,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(33)))), ((int)(((byte)(46)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.updateLabel);
+            this.Controls.Add(this.updateButton);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.WarningLabel);
             this.Controls.Add(this.OpenReplayFolder);
@@ -243,8 +245,9 @@
             this.Controls.Add(this.ProgressText);
             this.Controls.Add(this.ReConvertAll);
             this.Controls.Add(this.progressBar1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "VTRConverterForm";
-            this.Text = "w";
+            this.Text = "VTReplayConverter";
             this.Load += new System.EventHandler(this.VTRConverterForm_Load);
             this.ReplayButtonPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -266,6 +269,6 @@
         private System.Windows.Forms.Button OpenReplayFolder;
         private System.Windows.Forms.Label WarningLabel;
         private System.Windows.Forms.Label versionLabel;
-        private System.Windows.Forms.Label updateLabel;
+        private System.Windows.Forms.Button updateButton;
     }
 }
