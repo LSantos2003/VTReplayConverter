@@ -16,6 +16,8 @@ namespace VTReplayConverter
     {
         public static bool IncludeEW = true;
 
+        public static bool IncludeBullets = true;
+
         static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         ReplayRecorder recorder;
@@ -117,7 +119,7 @@ namespace VTReplayConverter
                 {
                     float t = trackKeyframe.Key;
 
-                    bool bulletSameFrame = Program.ConvertBullets ? ConvertBullets(streamWriter, bullets, t) : false;
+                    bool bulletSameFrame = VTACMI.IncludeBullets ? ConvertBullets(streamWriter, bullets, t) : false;
 
                     if (!bulletSameFrame)
                         streamWriter.WriteLine($"#{t}");

@@ -35,7 +35,7 @@
             this.ReConvertAll = new System.Windows.Forms.Button();
             this.ProgressText = new System.Windows.Forms.Label();
             this.OpenFolder = new System.Windows.Forms.Button();
-            this.includeEW = new System.Windows.Forms.CheckBox();
+            this.excludeEW = new System.Windows.Forms.CheckBox();
             this.ReplayButtonPanel = new System.Windows.Forms.Panel();
             this.TemplateButton = new System.Windows.Forms.Button();
             this.ConvertRemaining = new System.Windows.Forms.Button();
@@ -45,6 +45,7 @@
             this.versionLabel = new System.Windows.Forms.Label();
             this.updateButton = new System.Windows.Forms.Button();
             this.refreshReplaysButton = new System.Windows.Forms.Button();
+            this.excludeBullets = new System.Windows.Forms.CheckBox();
             this.ReplayButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -106,22 +107,22 @@
             this.OpenFolder.UseVisualStyleBackColor = false;
             this.OpenFolder.Click += new System.EventHandler(this.OpenFolder_Click);
             // 
-            // includeEW
+            // excludeEW
             // 
-            this.includeEW.AutoSize = true;
-            this.includeEW.Checked = true;
-            this.includeEW.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.includeEW.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
-            this.includeEW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.includeEW.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.includeEW.ForeColor = System.Drawing.Color.Gold;
-            this.includeEW.Location = new System.Drawing.Point(375, 232);
-            this.includeEW.Name = "includeEW";
-            this.includeEW.Size = new System.Drawing.Size(408, 21);
-            this.includeEW.TabIndex = 7;
-            this.includeEW.Text = "Exclude Electronic Warfare (Requires Reconverting Replays)";
-            this.includeEW.UseVisualStyleBackColor = true;
-            this.includeEW.CheckedChanged += new System.EventHandler(this.includeEW_CheckedChanged);
+            this.excludeEW.AutoSize = true;
+            this.excludeEW.Checked = true;
+            this.excludeEW.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.excludeEW.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.excludeEW.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.excludeEW.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.excludeEW.ForeColor = System.Drawing.Color.Gold;
+            this.excludeEW.Location = new System.Drawing.Point(375, 210);
+            this.excludeEW.Name = "excludeEW";
+            this.excludeEW.Size = new System.Drawing.Size(408, 21);
+            this.excludeEW.TabIndex = 7;
+            this.excludeEW.Text = "Exclude Electronic Warfare (Requires Reconverting Replays)";
+            this.excludeEW.UseVisualStyleBackColor = true;
+            this.excludeEW.CheckedChanged += new System.EventHandler(this.includeEW_CheckedChanged);
             // 
             // ReplayButtonPanel
             // 
@@ -244,12 +245,30 @@
             this.refreshReplaysButton.Visible = false;
             this.refreshReplaysButton.Click += new System.EventHandler(this.refreshReplaysButton_Click);
             // 
+            // excludeBullets
+            // 
+            this.excludeBullets.AutoSize = true;
+            this.excludeBullets.Checked = true;
+            this.excludeBullets.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.excludeBullets.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.excludeBullets.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.excludeBullets.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.excludeBullets.ForeColor = System.Drawing.Color.Gold;
+            this.excludeBullets.Location = new System.Drawing.Point(375, 232);
+            this.excludeBullets.Name = "excludeBullets";
+            this.excludeBullets.Size = new System.Drawing.Size(333, 21);
+            this.excludeBullets.TabIndex = 16;
+            this.excludeBullets.Text = "Exclude Bullets (Requires Reconverting Replays)";
+            this.excludeBullets.UseVisualStyleBackColor = true;
+            this.excludeBullets.CheckedChanged += new System.EventHandler(this.excludeBullets_CheckedChanged);
+            // 
             // VTRConverterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(33)))), ((int)(((byte)(46)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.excludeBullets);
             this.Controls.Add(this.refreshReplaysButton);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.versionLabel);
@@ -258,7 +277,7 @@
             this.Controls.Add(this.OpenTacviewFolder);
             this.Controls.Add(this.ConvertRemaining);
             this.Controls.Add(this.ReplayButtonPanel);
-            this.Controls.Add(this.includeEW);
+            this.Controls.Add(this.excludeEW);
             this.Controls.Add(this.OpenFolder);
             this.Controls.Add(this.ProgressText);
             this.Controls.Add(this.ReConvertAll);
@@ -279,7 +298,7 @@
         private System.Windows.Forms.Button ReConvertAll;
         private System.Windows.Forms.Label ProgressText;
         private System.Windows.Forms.Button OpenFolder;
-        private System.Windows.Forms.CheckBox includeEW;
+        private System.Windows.Forms.CheckBox excludeEW;
         private System.Windows.Forms.Panel ReplayButtonPanel;
         private System.Windows.Forms.Button TemplateButton;
         private System.Windows.Forms.Button ConvertRemaining;
@@ -289,5 +308,6 @@
         private System.Windows.Forms.Label versionLabel;
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.Button refreshReplaysButton;
+        private System.Windows.Forms.CheckBox excludeBullets;
     }
 }

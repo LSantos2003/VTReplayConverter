@@ -39,7 +39,8 @@ namespace VTReplayConverter
             progressBar1.Visible = false;
             ProgressText.Visible = false;
             WarningLabel.Visible = false;
-            includeEW.Checked = !VTACMI.IncludeEW;
+            excludeEW.Checked = !VTACMI.IncludeEW;
+            excludeBullets.Checked = !VTACMI.IncludeBullets;
 
             CreateReplayList();
             this.TemplateButton.Visible = false;
@@ -113,7 +114,12 @@ namespace VTReplayConverter
 
         private void includeEW_CheckedChanged(object sender, EventArgs e)
         {
-            VTACMI.IncludeEW = !includeEW.Checked;
+            VTACMI.IncludeEW = !excludeEW.Checked;
+        }
+
+        private void excludeBullets_CheckedChanged(object sender, EventArgs e)
+        {
+            VTACMI.IncludeBullets = !excludeBullets.Checked;
         }
 
         private void CreateReplayList()
@@ -239,5 +245,7 @@ namespace VTReplayConverter
         {
 
         }
+
+    
     }
 }

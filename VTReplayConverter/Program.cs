@@ -18,7 +18,7 @@ namespace VTReplayConverter
 
         public const bool ConsoleMode = false;
         public const float BulletPollRate = 0.35f;
-        public const bool ConvertBullets = true;
+
         public static string VTReplaysPath;
         public static string AcmiSavePath;
         public static string TacviewTerrainPath;
