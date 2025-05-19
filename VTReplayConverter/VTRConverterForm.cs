@@ -61,7 +61,6 @@ namespace VTReplayConverter
             }
 
             this.refreshReplaysButton.Visible = Program.IsDebugMode;
-
         }
 
         private void ReConvertAll_Click(object sender, EventArgs e)
@@ -230,7 +229,7 @@ namespace VTReplayConverter
 
                 this.updateButton.Text = "Updating";
                 await uManager.UpdateApp();
-                Application.Restart();
+                MessageBox.Show("Update succesful! Application will shutdown.");
                 Environment.Exit(0);
             }
             catch (Exception ex)
@@ -238,7 +237,6 @@ namespace VTReplayConverter
                 MessageBox.Show(ex.Message);
             }
 
-            MessageBox.Show("Update succesful! Please restart application");
         }
 
         private void WarningLabel_Click(object sender, EventArgs e)
