@@ -115,8 +115,6 @@ namespace VTReplayConverter
                 string meshName = Path.GetFileName(meshPath);
                 localMeshNames.Add(meshName);
                 string tacviewMeshPath = Path.Combine(TacviewMeshPath, meshName);
-                if (File.Exists(tacviewMeshPath))
-                    continue;
                 
                 File.Copy(meshPath, tacviewMeshPath, true);
 
