@@ -229,6 +229,10 @@ namespace VTReplayConverter
 
                 this.updateButton.Text = "Updating";
                 await uManager.UpdateApp();
+                if (Directory.Exists(Program.AcmiSavePath))
+                {
+                    Directory.Delete(Program.AcmiSavePath, true);
+                }
                 MessageBox.Show("Update succesful! Application will shutdown.");
                 Environment.Exit(0);
             }
