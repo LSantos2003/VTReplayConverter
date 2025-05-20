@@ -69,7 +69,7 @@ namespace VTReplayConverter
                 return;
 
             this.progressTextPrefix = "Re -Converting All Replays";
-            CommandHandler.ConvertAll(this.replayButtonDict, true);
+            VTRC.ConvertAll(this.replayButtonDict, true);
         }
 
         private void ConvertRemaining_Click(object sender, EventArgs e)
@@ -78,7 +78,7 @@ namespace VTReplayConverter
                 return;
 
             this.progressTextPrefix = "Converting Unconverted Replays";
-            CommandHandler.ConvertAll(this.replayButtonDict, false);
+            VTRC.ConvertAll(this.replayButtonDict, false);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -107,7 +107,7 @@ namespace VTReplayConverter
                 string folderName = Path.GetFileName(folderPath);
 
                 this.progressTextPrefix = $"Converting {folderName}";
-                CommandHandler.OpenFileFromPath(folderPath, folderName, true, false);
+                VTRC.OpenFileFromPath(folderPath, folderName, true, false);
             }
         }
 
@@ -185,11 +185,11 @@ namespace VTReplayConverter
             if (leftClick)
             {
                 this.progressTextPrefix = $"Opening {folderName}";
-                CommandHandler.OpenFileFromPath(folderPath, folderName, true, folderName.Contains("Autosave"), replayButton, false);
+                VTRC.OpenFileFromPath(folderPath, folderName, true, folderName.Contains("Autosave"), replayButton, false);
             }else if (rightClick)
             {
                 this.progressTextPrefix = $"Re-Converting {folderName}";
-                CommandHandler.OpenFileFromPath(folderPath, folderName, false, true, replayButton, true);
+                VTRC.OpenFileFromPath(folderPath, folderName, false, true, replayButton, true);
             }
 
 

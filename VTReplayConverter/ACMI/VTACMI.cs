@@ -18,9 +18,11 @@ namespace VTReplayConverter
 
         public static bool IncludeBullets = true;
 
+        public const float BulletPollRate = 0.35f;
+
         static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-        ReplayRecorder recorder;
+        private ReplayRecorder recorder;
 
         public VTACMI(string vtrPath)
         {
@@ -45,13 +47,13 @@ namespace VTReplayConverter
             await semaphore.WaitAsync();
          
             VTACMI converter = new VTACMI(vtrPath);
-            semaphore.Release(); // Release the resource
+            semaphore.Release(); // Release the Replay Serializer
 
             converter.ConvertFromPath(vtrPath, tacviewSavePath);
             converter.recorder.Reset();
         }
 
-        public void ConvertFromPath(string vtrPath, string tacviewSavePath)
+        private void ConvertFromPath(string vtrPath, string tacviewSavePath)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -171,6 +173,228 @@ namespace VTReplayConverter
             
         }
 
+        public static void DebugVTR(string vtrPath)
+        {
+            ReplayRecorder recorder = new ReplayRecorder();
+            recorder.Awake();
+            ReplaySerializer.LoadFromFile(vtrPath, recorder);
+
+            List<ReplayRecorder.ReplayEntity> entitites = recorder.GetAllEntities();
+
+            Console.WriteLine($"Motion Tracks: {recorder.motionTracks.Count}");
+            Console.WriteLine($"Event Tracks: {recorder.eventTrack.Count}");
+            Console.WriteLine($"Custom Tracks: {recorder.customTracks.Count}");
+
+            foreach (var motionTrack in entitites)
+            {
+                //Console.WriteLine($"{motionTrack.metaData.label}");
+            }
+
+            foreach (var track in recorder.eventTrack.keyframes)
+            {
+
+                //Console.WriteLine($"{(EventTypes)track.eventType} : {track.t}");
+            }
+
+            foreach (var track in recorder.customTracks)
+            {
+
+                if (track.Value.keyframeType == typeof(VTRPooledProjectile.PooledProjectileKeyframe))
+                {
+                    var customTrack = track.Value;
+                    var metaData = track.Value.metadata;
+                    Console.WriteLine($"{track.Value.keyframeType}");
+                    Console.WriteLine($"Keyframe Count: {track.Value.keyframes.Count}");
+                    Console.WriteLine();
+
+
+                }
+            }
+
+
+        }
+
+        private string BuildInitString(ReplayRecorder.ReplayEntity entity, float time)
+        {
+            entity.initalized = true;
+
+            string updateString = BuildUpdateString(entity, time);
+            string typeString = GetType((ReplayActorEntityTypes)entity.entityType);
+            string shapeString = GetShape(entity);
+            string colorString = GetColor((ReplayActorEntityTypes)entity.entityType);
+            string coalitionString = GetCoalition((ReplayActorEntityTypes)entity.entityType);
+
+            string builtString = $"{updateString},Name={entity.metaData.label},Type={typeString},LongName={entity.metaData.label},ShortName={entity.metaData.label}{colorString},Shape={shapeString}{coalitionString}";
+
+            return builtString;
+        }
+
+        private string BuildUpdateString(ReplayRecorder.ReplayEntity entity, float time)
+        {
+            string entityHex = ACMIUtils.GetEntityHex(entity.id);
+            Vector3 position;
+            Vector3 eulerRotation;
+            Quaternion rotation;
+            bool lastFrame;
+
+            ACMIUtils.GetPositionAndRotation(this.recorder.motionTracks[entity.id], time, out position, out eulerRotation, out rotation, out lastFrame);
+            if (entity.metaData.label.Contains("Carrier"))
+            {
+                Vector3 temp = position;
+                temp.y = position.y - 16f;
+                position = temp;
+
+                position += rotation * Vector3.forward * +94f;
+            }
+
+            Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(position);
+            this.recorder.motionTracks[entity.id].currentGPSPosition = gpsPosition;
+
+            string gpsString = $"{gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z}|{-eulerRotation.z}|{-eulerRotation.x}|{eulerRotation.y}";
+
+            string builtString = $"{entityHex},T={gpsString}";
+            builtString += lastFrame ? $"\n-{entityHex}" : "";
+
+            return builtString;
+        }
+
+        private void HandleCustomTrack(StreamWriter streamWriter, CustomTrack customTrack, float t)
+        {
+            if (IncludeEW && customTrack.keyframeType == typeof(RadarJammer.JammerKeyframe))
+            {
+                var metaData = (RadarJammer.ReplayMetadata)customTrack.metadata;
+                var entity = this.recorder.GetEntity(metaData.actorReplayId);
+
+                string tacviewString = !customTrack.initalized ? BuildJammerInitString(customTrack, entity, t) : BuildJammerUpdateString(customTrack, entity, t);
+                streamWriter.WriteLine(tacviewString);
+            }
+            else if (customTrack.keyframeType == typeof(LockingRadar.RadarLockKeyframe))
+            {
+                var metaData = (LockingRadar.RadarLockReplayMetadata)customTrack.metadata;
+                var entity = this.recorder.GetEntity(metaData.actorId);
+
+                string tacviewString = BuildRadarLockString(customTrack, entity, t);
+                streamWriter.WriteLine(tacviewString);
+            }
+            else if (customTrack.keyframeType == typeof(VTRPooledProjectile.PooledProjectileKeyframe))
+            {
+                var metaData = (VTRPooledProjectile.PooledProjectileMetadata)customTrack.metadata;
+
+                string tacviewString = BuildPooledUpdateString(customTrack, t);
+                streamWriter.WriteLine(tacviewString);
+            }
+        }
+
+        private string BuildJammerInitString(CustomTrack customTrack, ReplayRecorder.ReplayEntity entity, float t)
+        {
+            customTrack.initalized = true;
+            string updateString = BuildJammerUpdateString(customTrack, entity, t);
+            string typeString = "Missile";
+            string shapeString = "vtolvr_ConePog.obj";
+            string parentHex = ACMIUtils.GetEntityHex(entity.id);
+
+            string builtString = $"{updateString},Name=Jam,Type={typeString},Shape={shapeString},Parent={parentHex}";
+            return builtString;
+        }
+
+        private string BuildJammerUpdateString(CustomTrack customTrack, ReplayRecorder.ReplayEntity entity, float t)
+        {
+            int segmentIndex;
+            ACMIUtils.FindSegment<ReplayRecorder.Keyframe>(customTrack, out segmentIndex, t);
+
+            if (segmentIndex >= 0)
+            {
+                string jammerHex = ACMIUtils.GetJammerHex(customTrack.trackId);
+
+                RadarJammer.JammerKeyframe jammerKeyFrame1 = (RadarJammer.JammerKeyframe)customTrack.keyframes[segmentIndex];
+                int nextIndex = segmentIndex >= customTrack.keyframes.Count - 1 ? segmentIndex : segmentIndex + 1;
+
+                RadarJammer.JammerKeyframe jammerKeyFrame2 = (RadarJammer.JammerKeyframe)customTrack.keyframes[nextIndex];
+                float lerpT = Mathf.InverseLerp(jammerKeyFrame1.t, jammerKeyFrame2.t, t);
+
+
+                Vector3 lerpedDirection = ACMIUtils.Slerp(jammerKeyFrame1.direction, jammerKeyFrame2.direction, lerpT);
+
+                Vector3D gpsPosition = this.recorder.motionTracks[entity.id].currentGPSPosition;
+
+                float jammerYaw = Vector3.SignedAngle(Vector3.forward, lerpedDirection, Vector3.up);
+
+                float jammerPitch = Mathf.Asin(-lerpedDirection.y) * Mathf.Rad2Deg;
+                string gpsString = $"{gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z}|{0}|{-jammerPitch}|{jammerYaw}";
+
+                string color = GetJammerColor(jammerKeyFrame1.transmitMode, jammerKeyFrame1.band);
+
+
+                bool isVisible = jammerKeyFrame1.type == RadarJammer.JammerKeyframe.KeyframeType.Stop || jammerKeyFrame2.type == RadarJammer.JammerKeyframe.KeyframeType.Stop || segmentIndex >= customTrack.keyframes.Count - 1;
+
+                string visibleText = isVisible ? "0" : "0.25";
+                string builtString = $"{jammerHex},T={gpsString},Color={color},Visible={visibleText}";
+                //builtString += segmentIndex >= customTrack.keyframes.Count-2 ? $"\n-{jammerHex}" : "";
+
+
+                return builtString;
+            }
+
+            return string.Empty;
+        }
+
+        private string BuildPooledUpdateString(CustomTrack customTrack, float t)
+        {
+            int segmentIndex;
+            ACMIUtils.FindSegment<ReplayRecorder.Keyframe>(customTrack, out segmentIndex, t);
+
+            if (segmentIndex >= 0)
+            {
+                string pooledHex = ACMIUtils.GetProjectileHex(customTrack.trackId, customTrack.reinitalizedCount);
+
+                VTRPooledProjectile.PooledProjectileKeyframe pooledProjectileKeyframe = (VTRPooledProjectile.PooledProjectileKeyframe)customTrack.keyframes[segmentIndex];
+
+                Vector3 globalPos = pooledProjectileKeyframe.globalPos;
+                Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(globalPos);
+                int active = pooledProjectileKeyframe.active ? 1 : 0;
+                string typeString = "Rocket";
+                string shapeString = "Rocket.Hydra 70.obj";
+
+                string tacviewString = $"{pooledHex},T={gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z},Visible={active}";
+                if (!customTrack.initalized)
+                {
+                    tacviewString += $",Name=Rocket,Shape={shapeString},Type={typeString},Color=Orange";
+                    customTrack.initalized = true;
+                }
+
+                if (!pooledProjectileKeyframe.active)
+                {
+                    customTrack.initalized = false;
+                    customTrack.reinitalizedCount++;
+                }
+               
+                return tacviewString;
+
+            }
+
+            return string.Empty;
+        }
+
+        private string BuildRadarLockString(CustomTrack customTrack, ReplayRecorder.ReplayEntity entity, float t)
+        {
+            int segmentIndex;
+            ACMIUtils.FindSegment<ReplayRecorder.Keyframe>(customTrack, out segmentIndex, t);
+
+            if (segmentIndex >= 0)
+            {
+                string entityHex = ACMIUtils.GetEntityHex(entity.id);
+                LockingRadar.RadarLockKeyframe lockKeyFrame = (LockingRadar.RadarLockKeyframe)customTrack.keyframes[segmentIndex];
+
+                if (lockKeyFrame.targetId >= 0)
+                    return $"{entityHex},LockedTargetMode=1,LockedTarget={ACMIUtils.GetEntityHex(lockKeyFrame.targetId)}";
+
+
+                return $"{entityHex},LockedTargetMode=0,LockedTarget=-1";
+            }
+
+            return string.Empty;
+        }
+
         private bool ConvertBullets(StreamWriter streamWriter, List<BulletReplay> bullets, float t)
         {
             int whileLoopRan = 0;
@@ -212,7 +436,7 @@ namespace VTReplayConverter
                             continue;
                         }
 
-                        bullet.currentT += Program.BulletPollRate;
+                        bullet.currentT += VTACMI.BulletPollRate;
                         bullet.currentT = Math.Min(bullet.currentT, bullet.endT);
                     }
                 }
@@ -265,47 +489,6 @@ namespace VTReplayConverter
             
         }
 
-        public static void DebugVTR(string vtrPath)
-        {
-            ReplayRecorder recorder = new ReplayRecorder();
-            recorder.Awake();
-            ReplaySerializer.LoadFromFile(vtrPath, recorder);
-
-            List<ReplayRecorder.ReplayEntity> entitites = recorder.GetAllEntities();
-
-            Console.WriteLine($"Motion Tracks: {recorder.motionTracks.Count}");
-            Console.WriteLine($"Event Tracks: {recorder.eventTrack.Count}");
-            Console.WriteLine($"Custom Tracks: {recorder.customTracks.Count}");
-
-            foreach(var motionTrack in entitites)
-            {
-                //Console.WriteLine($"{motionTrack.metaData.label}");
-            }
-
-            foreach (var track in recorder.eventTrack.keyframes)
-            {
-
-                //Console.WriteLine($"{(EventTypes)track.eventType} : {track.t}");
-            }
-
-            foreach (var track in recorder.customTracks)
-            {
-
-                if (track.Value.keyframeType == typeof(VTRPooledProjectile.PooledProjectileKeyframe))
-                {
-                    var customTrack = track.Value;
-                    var metaData = track.Value.metadata;
-                    Console.WriteLine($"{track.Value.keyframeType}");
-                    Console.WriteLine($"Keyframe Count: {track.Value.keyframes.Count}");
-                    Console.WriteLine();
-
-
-                }
-            }
-
-           
-        } 
-        
         private string BuildBulletUpdateString(BulletReplay bullet, float t)
         {
 
@@ -320,7 +503,7 @@ namespace VTReplayConverter
             Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(position);
             string gpsString = $"{gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z}";
             string typeString = "Bullet";
-            
+
             string builtString = $"{entityHex},T={gpsString}";
             if (!bullet.initiliazed)
             {
@@ -330,178 +513,7 @@ namespace VTReplayConverter
 
 
             return builtString;
-        }  
-
-        private string BuildInitString(ReplayRecorder.ReplayEntity entity, float time)
-        {
-            entity.initalized = true;
-
-            string updateString = BuildUpdateString(entity, time);
-            string typeString = GetType((ReplayActorEntityTypes)entity.entityType);
-            string shapeString = GetShape(entity);
-            string colorString = GetColor((ReplayActorEntityTypes)entity.entityType);
-            string coalitionString = GetCoalition((ReplayActorEntityTypes)entity.entityType);
-
-            string builtString = $"{updateString},Name={entity.metaData.label},Type={typeString},LongName={entity.metaData.label},ShortName={entity.metaData.label}{colorString},Shape={shapeString}{coalitionString}";
-
-            return builtString;
         }
-        private string BuildUpdateString(ReplayRecorder.ReplayEntity entity, float time)
-        {
-            string entityHex = ACMIUtils.GetEntityHex(entity.id);
-            Vector3 position;
-            Vector3 eulerRotation;
-            Quaternion rotation;
-            bool lastFrame;
-
-            ACMIUtils.GetPositionAndRotation(this.recorder.motionTracks[entity.id], time, out position, out eulerRotation, out rotation, out lastFrame);
-            if (entity.metaData.label.Contains("Carrier"))
-            {
-                Vector3 temp = position;
-                temp.y = position.y - 16f;
-                position = temp;
-
-                position += rotation * Vector3.forward * + 94f;
-            }
-
-            Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(position);
-            this.recorder.motionTracks[entity.id].currentGPSPosition = gpsPosition;
-
-            string gpsString = $"{gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z}|{-eulerRotation.z}|{-eulerRotation.x}|{eulerRotation.y}";
-
-            string builtString = $"{entityHex},T={gpsString}";
-            builtString += lastFrame ? $"\n-{entityHex}" : "";
-            
-            return builtString;
-        }
-
-        private void HandleCustomTrack(StreamWriter streamWriter, CustomTrack customTrack, float t)
-        {
-            if (IncludeEW && customTrack.keyframeType == typeof(RadarJammer.JammerKeyframe))
-            {
-                var metaData = (RadarJammer.ReplayMetadata)customTrack.metadata;
-                var entity = this.recorder.GetEntity(metaData.actorReplayId);
-
-                string tacviewString = !customTrack.initalized ? BuildJammerInitString(customTrack, entity, t) : BuildJammerUpdateString(customTrack, entity, t);
-                streamWriter.WriteLine(tacviewString);
-            }else if(customTrack.keyframeType == typeof(LockingRadar.RadarLockKeyframe))
-            {
-                var metaData = (LockingRadar.RadarLockReplayMetadata)customTrack.metadata;
-                var entity = this.recorder.GetEntity(metaData.actorId);
-
-                string tacviewString = BuildRadarLockString(customTrack, entity, t);
-                streamWriter.WriteLine(tacviewString);
-            }else if(customTrack.keyframeType == typeof(VTRPooledProjectile.PooledProjectileKeyframe))
-            {
-                var metaData = (VTRPooledProjectile.PooledProjectileMetadata)customTrack.metadata;
-                
-                string tacviewString = BuildPooledUpdateString(customTrack, t);
-                streamWriter.WriteLine(tacviewString);
-            }
-        }
-
-        private string BuildJammerInitString(CustomTrack customTrack, ReplayRecorder.ReplayEntity entity, float t)
-        {
-            customTrack.initalized = true;
-            string updateString = BuildJammerUpdateString(customTrack,entity, t);
-            string typeString = "Missile";
-            string shapeString = "vtolvr_ConePog.obj";
-            string parentHex = ACMIUtils.GetEntityHex(entity.id);
-
-            string builtString = $"{updateString},Name=Jam,Type={typeString},Shape={shapeString},Parent={parentHex}";
-            return builtString;
-        }
-
-        private string BuildJammerUpdateString(CustomTrack customTrack, ReplayRecorder.ReplayEntity entity, float t)
-        {
-            int segmentIndex;
-            ACMIUtils.FindSegment<ReplayRecorder.Keyframe>(customTrack, out segmentIndex, t);
-
-            if (segmentIndex >= 0)
-            {
-                string jammerHex = ACMIUtils.GetJammerHex(customTrack.trackId);
-
-                RadarJammer.JammerKeyframe jammerKeyFrame1 = (RadarJammer.JammerKeyframe)customTrack.keyframes[segmentIndex];
-                int nextIndex = segmentIndex >= customTrack.keyframes.Count-1 ? segmentIndex : segmentIndex + 1;
-
-                RadarJammer.JammerKeyframe jammerKeyFrame2 = (RadarJammer.JammerKeyframe)customTrack.keyframes[nextIndex];
-                float lerpT = Mathf.InverseLerp(jammerKeyFrame1.t, jammerKeyFrame2.t, t);
-
-
-                Vector3 lerpedDirection = ACMIUtils.Slerp(jammerKeyFrame1.direction, jammerKeyFrame2.direction, lerpT);
-
-                Vector3D gpsPosition = this.recorder.motionTracks[entity.id].currentGPSPosition;
-
-                float jammerYaw = Vector3.SignedAngle(Vector3.forward, lerpedDirection, Vector3.up);
-
-                float jammerPitch = Mathf.Asin(-lerpedDirection.y) * Mathf.Rad2Deg;
-                string gpsString = $"{gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z}|{0}|{-jammerPitch}|{jammerYaw}";
-
-                string color = GetJammerColor(jammerKeyFrame1.transmitMode, jammerKeyFrame1.band);
-
-
-                bool isVisible = jammerKeyFrame1.type == RadarJammer.JammerKeyframe.KeyframeType.Stop || jammerKeyFrame2.type == RadarJammer.JammerKeyframe.KeyframeType.Stop || segmentIndex >= customTrack.keyframes.Count - 1;
-
-                string visibleText = isVisible ? "0" : "0.25";
-                string builtString = $"{jammerHex},T={gpsString},Color={color},Visible={visibleText}";
-                //builtString += segmentIndex >= customTrack.keyframes.Count-2 ? $"\n-{jammerHex}" : "";
-
-
-                return builtString;
-            }
-
-            return string.Empty;
-        }
-
-        private string BuildPooledUpdateString(CustomTrack customTrack, float t)
-        {
-            int segmentIndex;
-            ACMIUtils.FindSegment<ReplayRecorder.Keyframe>(customTrack, out segmentIndex, t);
-
-            if (segmentIndex >= 0)
-            {
-                string pooledHex = ACMIUtils.GetProjectileHex(customTrack.trackId);
-                VTRPooledProjectile.PooledProjectileKeyframe pooledProjectileKeyframe = (VTRPooledProjectile.PooledProjectileKeyframe)customTrack.keyframes[segmentIndex];
-
-                Vector3 globalPos = pooledProjectileKeyframe.globalPos;
-                Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(globalPos);
-                int active = pooledProjectileKeyframe.active ? 1 : 0;
-                string typeString = "Rocket";
-                string shapeString = "Rocket.Hydra 70.obj";
-
-                string tacviewString = $"{pooledHex},T={gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z},Visible={active}";
-                if (!customTrack.initalized)
-                {
-                    tacviewString += $",Name=Rocket,Shape={shapeString},Type={typeString},Color=Orange";
-                    customTrack.initalized = true;
-                }
-                return tacviewString;
-
-            }
-
-            return string.Empty;
-        }
-        private string BuildRadarLockString(CustomTrack customTrack, ReplayRecorder.ReplayEntity entity, float t)
-        {
-            int segmentIndex;
-            ACMIUtils.FindSegment<ReplayRecorder.Keyframe>(customTrack, out segmentIndex, t);
-
-            if(segmentIndex >= 0)
-            {
-                string entityHex = ACMIUtils.GetEntityHex(entity.id);
-                LockingRadar.RadarLockKeyframe lockKeyFrame = (LockingRadar.RadarLockKeyframe)customTrack.keyframes[segmentIndex];
-
-                if (lockKeyFrame.targetId >= 0)
-                    return $"{entityHex},LockedTargetMode=1,LockedTarget={ACMIUtils.GetEntityHex(lockKeyFrame.targetId)}";
-
-
-                return $"{entityHex},LockedTargetMode=0,LockedTarget=-1";
-            }
-
-            return string.Empty;
-        }
-
-
 
         private string GetType(ReplayActorEntityTypes entityType)
         {
@@ -580,6 +592,7 @@ namespace VTReplayConverter
 
             return shapeString;
         }
+
         private string GetColor(ReplayActorEntityTypes entityType)
         {
             string colorString;
@@ -632,6 +645,7 @@ namespace VTReplayConverter
                     return "Cyan";
             }
         }
+
         private string GetCoalition(ReplayActorEntityTypes entityType)
         {
             string coalitionString;

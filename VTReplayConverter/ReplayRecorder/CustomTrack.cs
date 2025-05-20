@@ -16,5 +16,7 @@ namespace VTReplayConverter
 
 		//VTReplayConvert Stuff
 		public bool initalized = false;
+
+		public int reinitalizedCount = 0;
 	}
 }

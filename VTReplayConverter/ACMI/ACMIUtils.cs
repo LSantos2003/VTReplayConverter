@@ -91,9 +91,9 @@ namespace VTReplayConverter
             return (bulletId + 1).ToString() + "B";
         }
 
-        public static string GetProjectileHex(int projectileId)
+        public static string GetProjectileHex(int projectileId, int instance)
         {
-            return (projectileId + 1).ToString() + "A";
+            return (projectileId + 1).ToString() + "A" + instance.ToString();
         }
 
         public static Teams GetEntityTeam(ReplayRecorder.ReplayEntity entity)

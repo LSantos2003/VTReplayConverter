@@ -181,6 +181,7 @@
     <Compile Include="VTRConverterForm.Designer.cs">
       <DependentUpon>VTRConverterForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinFormApp\VTRC.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

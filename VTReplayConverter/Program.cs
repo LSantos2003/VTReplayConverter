@@ -17,12 +17,15 @@ namespace VTReplayConverter
         public static string AssemblyVersion;
 
         public const bool ConsoleMode = false;
-        public const float BulletPollRate = 0.35f;
 
         public static string VTReplaysPath;
+
         public static string AcmiSavePath;
+
         public static string TacviewTerrainPath;
+
         public static string TacviewMeshPath;
+
         public static string LocalMeshPath;
 
         public static string ObjectConverterPath;
@@ -103,11 +106,14 @@ namespace VTReplayConverter
                 return;
             }
 
-            string[] meshPaths = Directory.GetFiles(LocalMeshPath, "*.*obj", SearchOption.AllDirectories);
 
+            //Copies files over
+            string[] meshPaths = Directory.GetFiles(LocalMeshPath, "*.*obj", SearchOption.AllDirectories);
+            List<string> localMeshNames = new List<string>();
             foreach(string meshPath in meshPaths)
             {
                 string meshName = Path.GetFileName(meshPath);
+                localMeshNames.Add(meshName);
                 string tacviewMeshPath = Path.Combine(TacviewMeshPath, meshName);
                 if (File.Exists(tacviewMeshPath))
                     continue;
@@ -116,6 +122,20 @@ namespace VTReplayConverter
 
             }
 
+            //Deletes files that are no longer used
+            string[] tacviewMeshPaths = Directory.GetFiles(TacviewMeshPath, "*.*obj", SearchOption.AllDirectories);
+            foreach (string meshPath in tacviewMeshPaths)
+            {
+                string tacviewMeshName = Path.GetFileName(meshPath);
+                if (localMeshNames.Contains(tacviewMeshName))
+                    continue;
+
+                if (tacviewMeshName.Contains("vtolvr_"))
+                {
+                    File.Delete(meshPath);
+                }
+
+            }
         }
 
         private static void DeleteOldVersions()

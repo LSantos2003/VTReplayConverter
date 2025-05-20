@@ -35,6 +35,9 @@ namespace VTReplayConverter
             if (configFile.HasValue("mapOffset"))
             {
                 mapOffset = configFile.GetValue<Vector3>("mapOffset");
+                float temp = mapOffset.y;
+                mapOffset.y = mapOffset.z;
+                mapOffset.z = temp;
             }
 
             SaveHeightMap(heightMap, mapSize);
@@ -103,9 +106,10 @@ namespace VTReplayConverter
             int width = texture.Width;
             int height = texture.Height;
 
+            bool isAkutan = (mapOffset.magnitude > 0) && (mapSize == 44000);
             //TODO change values for Akutan Heightmap
-            float altFactor = 0.0924f;
-            float altOffset = -80f;
+            float altFactor = isAkutan ? 0.0559f : 0.0924f;
+            float altOffset = isAkutan ? -440f:-73f;
 
             string projection = "Quad";
 
