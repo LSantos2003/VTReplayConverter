@@ -198,6 +198,11 @@ namespace VTReplayConverter
             if (low < track.keyframes.Count)
             {
                 segmentIndex = low;
+                //If there's a duplicate keyframe timestamp, return the later keyframe
+                if(low < track.keyframes.Count-1 && track.keyframes[segmentIndex].t == track.keyframes[segmentIndex + 1].t)
+                {
+                    segmentIndex++;
+                }
             }
             else
             {

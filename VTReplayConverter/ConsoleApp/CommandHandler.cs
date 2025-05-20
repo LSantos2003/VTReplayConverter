@@ -113,7 +113,7 @@ namespace VTReplayConverter
         }
 
         [Command("Help", "I hope you know what this does by now")]
-        public static void Help(string args)
+        static void Help(string args)
         {
 
             string format = "{0, -15} {1, -10}";
@@ -371,7 +371,7 @@ namespace VTReplayConverter
 
 
         [Command("Debug", "Debugs specific VTR File")]
-        public static void DebugVTR(string args)
+        static void DebugVTR(string args)
         {
             string readPath = Path.Combine(Program.VTReplaysPath, $"{args}\\replay.vtr");
             if (!File.Exists(readPath))

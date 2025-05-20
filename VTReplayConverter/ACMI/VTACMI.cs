@@ -84,7 +84,7 @@ namespace VTReplayConverter
 
             foreach(var customTrack in this.recorder.customTracks)
             {
-                if (!IncludeEW && customTrack.Value.keyframeType == typeof(RadarJammer.JammerKeyframe))
+                if (!VTACMI.IncludeEW && customTrack.Value.keyframeType == typeof(RadarJammer.JammerKeyframe))
                     continue;
 
                 var keyFrames = customTrack.Value.keyframes;
@@ -269,7 +269,6 @@ namespace VTReplayConverter
         {
             ReplayRecorder recorder = new ReplayRecorder();
             recorder.Awake();
-
             ReplaySerializer.LoadFromFile(vtrPath, recorder);
 
             List<ReplayRecorder.ReplayEntity> entitites = recorder.GetAllEntities();
@@ -292,13 +291,14 @@ namespace VTReplayConverter
             foreach (var track in recorder.customTracks)
             {
 
-                if(track.Value.keyframeType == typeof(RadarJammer.JammerKeyframe))
+                if (track.Value.keyframeType == typeof(VTRPooledProjectile.PooledProjectileKeyframe))
                 {
-                    var metaData = (RadarJammer.ReplayMetadata)track.Value.metadata;
-                    Console.WriteLine($"Actor Name: {recorder.GetEntity(metaData.actorReplayId).metaData.label}");
+                    var customTrack = track.Value;
+                    var metaData = track.Value.metadata;
                     Console.WriteLine($"{track.Value.keyframeType}");
                     Console.WriteLine($"Keyframe Count: {track.Value.keyframes.Count}");
                     Console.WriteLine();
+
 
                 }
             }
@@ -475,8 +475,6 @@ namespace VTReplayConverter
                     tacviewString += $",Name=Rocket,Shape={shapeString},Type={typeString},Color=Orange";
                     customTrack.initalized = true;
                 }
-
-
                 return tacviewString;
 
             }
