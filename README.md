@@ -17,3 +17,7 @@ Converts VTOL VR Tactical Replay Files Into ACMI Files for Tacview!
 ## Soon To Come
 - More VTOL VR models to put in 
 - SAM Threat Spheres
+
+##Big thanks to 
+- Kynabas: Testing and model edits
+- Danku: Testing and EW Cone
