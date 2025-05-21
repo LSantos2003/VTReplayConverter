@@ -68,7 +68,7 @@ namespace VTReplayConverter
             if (Program.ConvertingFile)
                 return;
 
-            this.progressTextPrefix = "Re -Converting All Replays";
+            this.progressTextPrefix = "Re-Converting All Replays";
             VTRC.ConvertAll(this.replayButtonDict, true);
         }
 
