@@ -42,10 +42,10 @@
             this.OpenTacviewFolder = new System.Windows.Forms.Button();
             this.OpenReplayFolder = new System.Windows.Forms.Button();
             this.WarningLabel = new System.Windows.Forms.Label();
-            this.versionLabel = new System.Windows.Forms.Label();
             this.updateButton = new System.Windows.Forms.Button();
             this.refreshReplaysButton = new System.Windows.Forms.Button();
             this.excludeBullets = new System.Windows.Forms.CheckBox();
+            this.versionLabel = new System.Windows.Forms.Label();
             this.ReplayButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -204,24 +204,13 @@
             this.WarningLabel.Text = "CANNOT OPEN REPLAYS OR UPDATE PROGRAM \r\nWHILE CONVERTING";
             this.WarningLabel.Click += new System.EventHandler(this.WarningLabel_Click);
             // 
-            // versionLabel
-            // 
-            this.versionLabel.AutoSize = true;
-            this.versionLabel.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.versionLabel.ForeColor = System.Drawing.Color.Gainsboro;
-            this.versionLabel.Location = new System.Drawing.Point(649, 419);
-            this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(139, 19);
-            this.versionLabel.TabIndex = 13;
-            this.versionLabel.Text = "Version 1.0.0";
-            // 
             // updateButton
             // 
             this.updateButton.BackColor = System.Drawing.Color.Silver;
             this.updateButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.updateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.updateButton.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.updateButton.Location = new System.Drawing.Point(605, 384);
+            this.updateButton.Location = new System.Drawing.Point(615, 384);
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(183, 32);
             this.updateButton.TabIndex = 14;
@@ -256,11 +245,23 @@
             this.excludeBullets.ForeColor = System.Drawing.Color.Gold;
             this.excludeBullets.Location = new System.Drawing.Point(375, 232);
             this.excludeBullets.Name = "excludeBullets";
-            this.excludeBullets.Size = new System.Drawing.Size(333, 21);
+            this.excludeBullets.Size = new System.Drawing.Size(375, 21);
             this.excludeBullets.TabIndex = 16;
-            this.excludeBullets.Text = "Exclude Bullets (Requires Reconverting Replays)";
+            this.excludeBullets.Text = "Exclude Bullets (Signficantly Reduces Conversion Time)";
             this.excludeBullets.UseVisualStyleBackColor = true;
             this.excludeBullets.CheckedChanged += new System.EventHandler(this.excludeBullets_CheckedChanged);
+            // 
+            // versionLabel
+            // 
+            this.versionLabel.AutoSize = true;
+            this.versionLabel.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.versionLabel.ForeColor = System.Drawing.Color.Gainsboro;
+            this.versionLabel.Location = new System.Drawing.Point(649, 419);
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(149, 19);
+            this.versionLabel.TabIndex = 13;
+            this.versionLabel.Text = "Version 1.0.00";
+            this.versionLabel.Click += new System.EventHandler(this.versionLabel_Click);
             // 
             // VTRConverterForm
             // 
@@ -305,9 +306,9 @@
         private System.Windows.Forms.Button OpenTacviewFolder;
         private System.Windows.Forms.Button OpenReplayFolder;
         private System.Windows.Forms.Label WarningLabel;
-        private System.Windows.Forms.Label versionLabel;
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.Button refreshReplaysButton;
         private System.Windows.Forms.CheckBox excludeBullets;
+        private System.Windows.Forms.Label versionLabel;
     }
 }

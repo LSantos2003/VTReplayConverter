@@ -248,6 +248,9 @@ namespace VTReplayConverter
 
         }
 
-    
+        private void versionLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
