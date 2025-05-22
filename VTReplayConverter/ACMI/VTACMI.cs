@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Runtime;
 using System.Threading.Tasks;
 using UnityEngine;
 using VTOLVR.ReplaySystem;
-using System.IO.Compression;
 using System.Threading;
+
 
 namespace VTReplayConverter
 {
@@ -250,7 +249,7 @@ namespace VTReplayConverter
             Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(position);
             this.recorder.motionTracks[entity.id].currentGPSPosition = gpsPosition;
 
-            string gpsString = $"{gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z}|{-eulerRotation.z}|{-eulerRotation.x}|{eulerRotation.y}";
+            string gpsString = $"{gpsPosition.y.Invariant()}|{gpsPosition.x.Invariant()}|{gpsPosition.z.Invariant()}|{-eulerRotation.z}|{(-eulerRotation.x).Invariant()}|{eulerRotation.y.Invariant()}";
 
             string builtString = $"{entityHex},T={gpsString}";
             builtString += lastFrame ? $"\n-{entityHex}" : "";
@@ -320,7 +319,7 @@ namespace VTReplayConverter
                 float jammerYaw = Vector3.SignedAngle(Vector3.forward, lerpedDirection, Vector3.up);
 
                 float jammerPitch = Mathf.Asin(-lerpedDirection.y) * Mathf.Rad2Deg;
-                string gpsString = $"{gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z}|{0}|{-jammerPitch}|{jammerYaw}";
+                string gpsString = $"{gpsPosition.y.Invariant()}|{gpsPosition.x.Invariant()}|{gpsPosition.z.Invariant()}|{0}|{(-jammerPitch).Invariant()}|{jammerYaw.Invariant()}";
 
                 string color = GetJammerColor(jammerKeyFrame1.transmitMode, jammerKeyFrame1.band);
 
@@ -355,7 +354,7 @@ namespace VTReplayConverter
                 string typeString = "Rocket";
                 string shapeString = "Rocket.Hydra 70.obj";
 
-                string tacviewString = $"{pooledHex},T={gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z},Visible={active}";
+                string tacviewString = $"{pooledHex},T={gpsPosition.y.Invariant()}|{gpsPosition.x.Invariant()}|{gpsPosition.z.Invariant()},Visible={active}";
                 if (!customTrack.initalized)
                 {
                     tacviewString += $",Name=Rocket,Shape={shapeString},Type={typeString},Color=Orange";
@@ -501,7 +500,7 @@ namespace VTReplayConverter
 
             Vector3 position = bullet.GetBulletPos(t);
             Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(position);
-            string gpsString = $"{gpsPosition.y}|{gpsPosition.x}|{gpsPosition.z}";
+            string gpsString = $"{gpsPosition.y.Invariant()}|{gpsPosition.x.Invariant()}|{gpsPosition.z.Invariant()}";
             string typeString = "Bullet";
 
             string builtString = $"{entityHex},T={gpsString}";
@@ -682,5 +681,8 @@ namespace VTReplayConverter
             ChopperA,
             ChopperB
         }
+
     }
+
+
 }

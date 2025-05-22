@@ -152,6 +152,7 @@
     <Compile Include="ACMI\ACMIUtils.cs" />
     <Compile Include="ConsoleApp\Attributes.cs" />
     <Compile Include="ConsoleApp\CommandHandler.cs" />
+    <Compile Include="FloatExtensions.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -119,21 +119,21 @@ namespace VTReplayConverter
                                                 new XElement("BigEndian", endian.ToString()),
                                                 new XElement("Width", width.ToString()),
                                                 new XElement("Height", height.ToString()),
-                                                new XElement("AltitudeFactor", altFactor.ToString()),
-                                                new XElement("AltitudeOffset", altOffset.ToString()),
+                                                new XElement("AltitudeFactor", altFactor.Invariant()),
+                                                new XElement("AltitudeOffset", altOffset.Invariant()),
                                                 new XElement("Projection", projection.ToString()),
                                                 new XElement("BottomLeft",
-                                                    new XElement("Longitude", geoLocations[0].Longitude),
-                                                    new XElement("Latitude", geoLocations[0].Latitude)),
+                                                    new XElement("Longitude", geoLocations[0].Longitude.Invariant()),
+                                                    new XElement("Latitude", geoLocations[0].Latitude.Invariant())),
                                                 new XElement("BottomRight",
-                                                    new XElement("Longitude", geoLocations[1].Longitude),
-                                                    new XElement("Latitude", geoLocations[1].Latitude)),
+                                                    new XElement("Longitude", geoLocations[1].Longitude.Invariant()),
+                                                    new XElement("Latitude", geoLocations[1].Latitude.Invariant())),
                                                 new XElement("TopRight",
-                                                    new XElement("Longitude", geoLocations[2].Longitude),
-                                                    new XElement("Latitude", geoLocations[2].Latitude)),
+                                                    new XElement("Longitude", geoLocations[2].Longitude.Invariant()),
+                                                    new XElement("Latitude", geoLocations[2].Latitude.Invariant())),
                                                 new XElement("TopLeft",
-                                                    new XElement("Longitude", geoLocations[3].Longitude),
-                                                    new XElement("Latitude", geoLocations[3].Latitude))
+                                                    new XElement("Longitude", geoLocations[3].Longitude.Invariant()),
+                                                    new XElement("Latitude", geoLocations[3].Latitude.Invariant()))
                                                 ))));
 
             Console.WriteLine($"Saving custom tacview custom XML to {xmlSavePath}");
