@@ -249,7 +249,7 @@ namespace VTReplayConverter
             Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(position);
             this.recorder.motionTracks[entity.id].currentGPSPosition = gpsPosition;
 
-            string gpsString = $"{gpsPosition.y.Invariant()}|{gpsPosition.x.Invariant()}|{gpsPosition.z.Invariant()}|{-eulerRotation.z}|{(-eulerRotation.x).Invariant()}|{eulerRotation.y.Invariant()}";
+            string gpsString = $"{gpsPosition.y.Invariant()}|{gpsPosition.x.Invariant()}|{gpsPosition.z.Invariant()}|{(-eulerRotation.z).Invariant()}|{(-eulerRotation.x).Invariant()}|{eulerRotation.y.Invariant()}";
 
             string builtString = $"{entityHex},T={gpsString}";
             builtString += lastFrame ? $"\n-{entityHex}" : "";
