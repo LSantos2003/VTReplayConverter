@@ -1,0 +1,128 @@
+B-11 Bomber:vtolvr_ABomberAI.obj
+Decoy Radar Transmitter:AntiAircraft.SAM.SA-10.76N6.obj
+IRMD Launcher:AntiAircraft.SAM.Launcher.obj
+GECM Truck:AntiAircraft.SAM.SA-10.76N6.obj
+Assault Carrier:vtolvr_AlliedAAShip.obj
+SAM Launcher B:AntiAircraft.SAM.SA-2.LN.obj
+Storage Tent:vtolvr_cylinderTent.obj
+SAM Radar:vtolvr_SAMFCR.obj
+Boxer IFV:
+M1 Tank:vtolvr_alliedMBT1.obj
+Allied Infantry:Core.Infantry.obj
+Allied Infantry MANPADS:AntiAircraft.SAM.Manpad.obj
+Mobile Missile Warning Truck:AntiAircraft.SAM.SA-10.76N6.obj
+Boxer APC:
+Rocket Artillery Truck:vtolvr_ARocketTruck.obj
+AV-42:vtolvr_AV-42CAI.obj
+Backstop Radar:AntiAircraft.SAM.P-15.obj
+Bunker A:vtolvr_bunker1.obj
+Bunker B:vtolvr_bunker1.obj
+E-4 Overlord:vtolvr_E-4.obj
+EF-24:FixedWing.F-14.obj
+Escort Cruiser:vtolvr_EscortCruiser.obj
+Early Warning Radar:
+F-45A:vtolvr_F-45A.obj
+F/A-26B:vtolvr_FA-26.obj
+Factory:
+KC-49:vtolvr_KC-49.obj
+Missile Silo:
+MQ-31:vtolvr_MQ-31.obj
+Fire Ctrl Radar P:vtolvr_PatRadarTrailer.obj
+SAM Launcher P:vtolvr_PatriotLauncher.obj
+C-RAM Truck:vtolvr_PhallanxTruck.obj
+SLAM Truck:vtolvr_SRADTruck.obj
+SRAD Truck:vtolvr_SRADTruck.obj
+CIWS:
+Decoy Launcher:AntiAircraft.SAM.Launcher.obj
+T-55:vtolvr_T-55.obj
+Watchman Truck:
+AEW-50:FixedWing.E-3.obj
+Manta UCAV:vtolvr_aiucav.obj
+ASF-30:vtolvr_ASF-30.obj
+ASF-33:vtolvr_ASF-33.obj
+ASF-58:vtolvr_ASF-58.obj
+Drone Carrier:vtolvr_DroneCarrier.obj
+Gun Boat:vtolvr_DroneGunBoat.obj
+Drone Missile Ship:vtolvr_DroneMissileCruiser.obj
+HB-106 Bomber:vtolvr_EBomberAI.obj
+APC:
+NFP Carrier:vtolvr_EnemyCarrier.obj
+MBT2-E Tank:vtolvr_enemyMBT1.obj
+Enemy Infantry:Core.Infantry.obj
+Enemy Infantry MANPADS:AntiAircraft.SAM.Manpad.obj
+Super Missile Cruiser:vtolvr_ESuperMissileCruiser.obj
+GAV-25 Bullshark:vtolvr_GAV-25.obj
+IFV-1:
+IR APC:vtolvr_IRAPC.obj
+MAD-4 Launcher:vtolvr_MAD-4Launcher.obj
+MAD-4 Radar:vtolvr_MAD-4Radar.obj
+Mine Boat:vtolvr_MineBoat.obj
+SAAW:vtolvr_SAAW.obj
+SAM Battery:vtolvr_SamBattery1.obj
+SL-MRM Launcher:
+SL-MRM Radar:AntiAircraft.SAM.SA-6.1S91.obj
+Z20x2 Anti-Air Artillery:vtolvr_staticAAA-20x2.obj
+AH-94:Rotorcraft.AH-64.obj
+F-16:FixedWing.F-16.obj
+A-10D:FixedWing.A-10.obj
+Carrier:Watercraft.CVN-74.obj
+Artillery:vtolvr_Artillery.obj
+AH-6:Rotorcraft.MD 500.obj
+SU-47M:FixedWing.Su-47.obj
+ADM-160J:Missile.AGM-84E.obj
+AGM-89:Missile.AGM-84E.obj
+AGM-145:Core.Missile.obj
+AGM-161:Missile.AGM-84E.obj
+AIM-7:Missile.AIM-7M.obj
+AIM-9+:Missile.AIM-9M.obj
+AIM-9:Missile.AIM-9M.obj
+AIM-9E:Missile.AIM-9M.obj
+AIM-54:Missile.AIM-54A.obj
+AIM-92:Missile.9K38.obj
+FIM-92:Missile.9K38.obj
+AIM-120:Missile.AIM-120C.obj
+AIM-120D:Missile.AIM-120C.obj
+AIRS-T:Missile.AIM-132.obj
+APKWS:Rocket.Hydra 70.obj
+ASMRM-1:Missile.R-27.obj
+ASMRM-7:Missile.R-27.obj
+ASF-SRM-RA:Missile.R-77.obj
+ASF-SRM:Missile.R-77.obj
+BGM-71:Core.Missile.obj
+CAGM-6:Core.Missile.obj
+CBU-97:Bomb.MK-20.obj
+GBU-12:Bomb.GBU-12.obj
+GBU-10:Core.Bomb.obj
+GBU-31:Core.Bomb.obj
+GBU-38:Core.Bomb.obj
+GBU-39:Missile.SOM.obj
+GBU-39ER:Missile.SOM.obj
+GBU-53:Missile.SOM.obj
+GMA-6:Core.Missile.obj
+GMA-14:Core.Missile.obj
+HARM:Missile.AGM-88.obj
+AGM-114:Core.Missile.obj
+AGM-188:Missile.AGM-88.obj
+AGM-65:Missile.AGM-65.obj
+MK82:Bomb.AN-M59.obj
+MK82HighDrag:Bomb.AN-M59.obj
+MK83:Bomb.AN-M59.obj
+MK84:Bomb.AN-M59.obj
+SB-1:Core.Bomb.obj
+AGM-126:Missile.AIM-9M.obj
+CSM-6:Core.Missile.obj
+TestASM:Missile.AGM-65.obj
+W-SM:Rocket.Hydra 70.obj
+SLIR-1:Missile.AIM-132.obj
+ASM-66:Missile.9M330.obj
+BSM-66:Missile.9M330.obj
+BSTOP-2:Missile.9M330.obj
+RIM-118:Missile.9M330.obj
+ESSM:Missile.9M330.obj
+SEA-900:Missile.9M330.obj
+FLKM-100:Missile.9M330.obj
+MAD-4:Missile.9M330.obj
+PAC-3:Missile.9M330.obj
+RIM-67B:Missile.9M330.obj
+9M311:Missile.9M330.obj
+RGM-85:Missile.9M330.obj

@@ -234,6 +234,7 @@
     <Error Condition="!Exists('..\packages\squirrel.windows.2.0.1\build\squirrel.windows.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\squirrel.windows.2.0.1\build\squirrel.windows.props'))" />
   </Target>
   <Target Name="AfterBuild">
+    <Copy SourceFiles="units.txt" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
     <ItemGroup>
       <NugetTools Include="$(SolutionDir)packages\NuGet.CommandLine.*\tools\NuGet.exe" />
       <SquirrelTools Include="$(SolutionDir)packages\squirrel.windows.*\tools\Squirrel.exe" />
