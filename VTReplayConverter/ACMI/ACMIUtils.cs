@@ -45,7 +45,7 @@ namespace VTReplayConverter
                 using (FileStream zipToOpen = new FileStream(tempZipPath, FileMode.Create))
                 using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
                 {
-                    archive.CreateEntryFromFile(filePath, fileName, CompressionLevel.Optimal);
+                    archive.CreateEntryFromFile(filePath, fileName, System.IO.Compression.CompressionLevel.Optimal);
                 }
 
                 // Replace the original file with the zipped version (but keep the original name)

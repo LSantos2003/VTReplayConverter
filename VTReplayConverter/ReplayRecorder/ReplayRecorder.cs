@@ -15,7 +15,7 @@ namespace VTReplayConverter
 
 		private List<ReplayRecorder.ReplayEntity> trackedEntities = new List<ReplayRecorder.ReplayEntity>();
 
-		private Dictionary<int, ReplayRecorder.ReplayEntity> entityDict = new Dictionary<int, ReplayRecorder.ReplayEntity>();
+		public Dictionary<int, ReplayRecorder.ReplayEntity> entityDict = new Dictionary<int, ReplayRecorder.ReplayEntity>();
 
 		private int nextId;
 

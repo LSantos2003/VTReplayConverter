@@ -20,7 +20,16 @@ public class LockingRadar
 		{
 			ReplaySerializer.WriteInt(this.actorId);
 		}
-	}
+
+        public int getEntityId() 
+		{
+			return actorId;
+		}
+        public void setEntityId(int id) 
+		{
+			this.actorId = id;
+		}
+    }
 
 	public class RadarLockKeyframe : ReplayRecorder.Keyframe
 	{
@@ -37,6 +46,6 @@ public class LockingRadar
 			base.OnDeserialize();
 			this.targetId = ReplaySerializer.ReadInt();
 		}
-	}
+    }
 }
 

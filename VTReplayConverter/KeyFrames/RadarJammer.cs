@@ -64,6 +64,15 @@ public class RadarJammer
 		{
 			ReplaySerializer.WriteInt(this.actorReplayId);
 		}
-	}
+
+        public int getEntityId()
+		{
+			return this.actorReplayId;
+		}
+        public void setEntityId(int id)
+		{
+            actorReplayId = id;
+        }
+    }
 }
 

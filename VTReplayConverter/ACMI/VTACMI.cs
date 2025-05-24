@@ -17,6 +17,8 @@ namespace VTReplayConverter
 
         public static bool IncludeBullets = true;
 
+        public static bool RandomObjectIds = false;
+
         public const float BulletPollRate = 0.35f;
 
         static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);

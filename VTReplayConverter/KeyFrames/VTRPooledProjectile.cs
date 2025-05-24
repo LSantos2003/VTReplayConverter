@@ -19,7 +19,15 @@ namespace VTOLVR.ReplaySystem
 			public void ReplaySerialize()
 			{
 			}
-		}
+
+			public int getEntityId() 
+			{ 
+				return -1; 
+			}
+            public void setEntityId(int id)
+			{
+			}
+        }
 
 		public class PooledProjectileKeyframe : ReplayRecorder.InterpolatedKeyframe
 		{

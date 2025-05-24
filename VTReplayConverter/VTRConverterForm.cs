@@ -252,5 +252,10 @@ namespace VTReplayConverter
         {
 
         }
+
+        private void RandomObjectIDs_CheckedChanged(object sender, EventArgs e)
+        {
+            VTACMI.RandomObjectIds = RandomObjectIDs.Checked;
+        }
     }
 }

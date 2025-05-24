@@ -46,6 +46,7 @@
             this.refreshReplaysButton = new System.Windows.Forms.Button();
             this.excludeBullets = new System.Windows.Forms.CheckBox();
             this.versionLabel = new System.Windows.Forms.Label();
+            this.RandomObjectIDs = new System.Windows.Forms.CheckBox();
             this.ReplayButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +72,7 @@
             this.ReConvertAll.BackColor = System.Drawing.Color.Silver;
             this.ReConvertAll.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.ReConvertAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ReConvertAll.Font = new System.Drawing.Font("Unispace", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ReConvertAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ReConvertAll.Location = new System.Drawing.Point(375, 78);
             this.ReConvertAll.Name = "ReConvertAll";
             this.ReConvertAll.Size = new System.Drawing.Size(178, 60);
@@ -86,7 +87,7 @@
             this.ProgressText.AutoSize = true;
             this.ProgressText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ProgressText.ForeColor = System.Drawing.Color.Gold;
-            this.ProgressText.Location = new System.Drawing.Point(372, 256);
+            this.ProgressText.Location = new System.Drawing.Point(633, 297);
             this.ProgressText.Name = "ProgressText";
             this.ProgressText.Size = new System.Drawing.Size(141, 45);
             this.ProgressText.TabIndex = 4;
@@ -98,7 +99,7 @@
             this.OpenFolder.BackColor = System.Drawing.Color.Silver;
             this.OpenFolder.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.OpenFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenFolder.Font = new System.Drawing.Font("Unispace", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.OpenFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.OpenFolder.Location = new System.Drawing.Point(375, 144);
             this.OpenFolder.Name = "OpenFolder";
             this.OpenFolder.Size = new System.Drawing.Size(178, 60);
@@ -140,7 +141,7 @@
             this.TemplateButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Teal;
             this.TemplateButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.CadetBlue;
             this.TemplateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.TemplateButton.Font = new System.Drawing.Font("Unispace", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TemplateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TemplateButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.TemplateButton.Location = new System.Drawing.Point(3, 3);
             this.TemplateButton.Name = "TemplateButton";
@@ -154,7 +155,7 @@
             this.ConvertRemaining.BackColor = System.Drawing.Color.Silver;
             this.ConvertRemaining.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.ConvertRemaining.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ConvertRemaining.Font = new System.Drawing.Font("Unispace", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ConvertRemaining.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ConvertRemaining.Location = new System.Drawing.Point(375, 12);
             this.ConvertRemaining.Name = "ConvertRemaining";
             this.ConvertRemaining.Size = new System.Drawing.Size(178, 60);
@@ -169,7 +170,7 @@
             this.OpenTacviewFolder.BackColor = System.Drawing.Color.Silver;
             this.OpenTacviewFolder.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.OpenTacviewFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenTacviewFolder.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.OpenTacviewFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.OpenTacviewFolder.Location = new System.Drawing.Point(580, 12);
             this.OpenTacviewFolder.Name = "OpenTacviewFolder";
             this.OpenTacviewFolder.Size = new System.Drawing.Size(178, 44);
@@ -183,7 +184,7 @@
             this.OpenReplayFolder.BackColor = System.Drawing.Color.Silver;
             this.OpenReplayFolder.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.OpenReplayFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenReplayFolder.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.OpenReplayFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.OpenReplayFolder.Location = new System.Drawing.Point(580, 62);
             this.OpenReplayFolder.Name = "OpenReplayFolder";
             this.OpenReplayFolder.Size = new System.Drawing.Size(178, 44);
@@ -195,11 +196,11 @@
             // WarningLabel
             // 
             this.WarningLabel.AutoSize = true;
-            this.WarningLabel.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.WarningLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.WarningLabel.ForeColor = System.Drawing.Color.DarkRed;
             this.WarningLabel.Location = new System.Drawing.Point(371, 354);
             this.WarningLabel.Name = "WarningLabel";
-            this.WarningLabel.Size = new System.Drawing.Size(389, 38);
+            this.WarningLabel.Size = new System.Drawing.Size(427, 40);
             this.WarningLabel.TabIndex = 12;
             this.WarningLabel.Text = "CANNOT OPEN REPLAYS OR UPDATE PROGRAM \r\nWHILE CONVERTING";
             this.WarningLabel.Click += new System.EventHandler(this.WarningLabel_Click);
@@ -209,7 +210,7 @@
             this.updateButton.BackColor = System.Drawing.Color.Silver;
             this.updateButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.updateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.updateButton.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.updateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.updateButton.Location = new System.Drawing.Point(615, 384);
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(183, 32);
@@ -224,7 +225,7 @@
             this.refreshReplaysButton.BackColor = System.Drawing.Color.Silver;
             this.refreshReplaysButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.refreshReplaysButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.refreshReplaysButton.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.refreshReplaysButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.refreshReplaysButton.Location = new System.Drawing.Point(580, 112);
             this.refreshReplaysButton.Name = "refreshReplaysButton";
             this.refreshReplaysButton.Size = new System.Drawing.Size(178, 44);
@@ -243,7 +244,7 @@
             this.excludeBullets.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.excludeBullets.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.excludeBullets.ForeColor = System.Drawing.Color.Gold;
-            this.excludeBullets.Location = new System.Drawing.Point(375, 232);
+            this.excludeBullets.Location = new System.Drawing.Point(375, 234);
             this.excludeBullets.Name = "excludeBullets";
             this.excludeBullets.Size = new System.Drawing.Size(375, 21);
             this.excludeBullets.TabIndex = 16;
@@ -254,14 +255,29 @@
             // versionLabel
             // 
             this.versionLabel.AutoSize = true;
-            this.versionLabel.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.versionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.versionLabel.ForeColor = System.Drawing.Color.Gainsboro;
             this.versionLabel.Location = new System.Drawing.Point(649, 419);
             this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(149, 19);
+            this.versionLabel.Size = new System.Drawing.Size(125, 20);
             this.versionLabel.TabIndex = 13;
             this.versionLabel.Text = "Version 1.0.00";
             this.versionLabel.Click += new System.EventHandler(this.versionLabel_Click);
+            // 
+            // RandomObjectIDs
+            // 
+            this.RandomObjectIDs.AutoSize = true;
+            this.RandomObjectIDs.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.RandomObjectIDs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RandomObjectIDs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RandomObjectIDs.ForeColor = System.Drawing.Color.Gold;
+            this.RandomObjectIDs.Location = new System.Drawing.Point(375, 258);
+            this.RandomObjectIDs.Name = "RandomObjectIDs";
+            this.RandomObjectIDs.Size = new System.Drawing.Size(229, 21);
+            this.RandomObjectIDs.TabIndex = 17;
+            this.RandomObjectIDs.Text = "Randomize Tacview’s Object IDs";
+            this.RandomObjectIDs.UseVisualStyleBackColor = true;
+            this.RandomObjectIDs.CheckedChanged += new System.EventHandler(this.RandomObjectIDs_CheckedChanged);
             // 
             // VTRConverterForm
             // 
@@ -269,6 +285,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(33)))), ((int)(((byte)(46)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.RandomObjectIDs);
             this.Controls.Add(this.excludeBullets);
             this.Controls.Add(this.refreshReplaysButton);
             this.Controls.Add(this.updateButton);
@@ -310,5 +327,6 @@
         private System.Windows.Forms.Button refreshReplaysButton;
         private System.Windows.Forms.CheckBox excludeBullets;
         private System.Windows.Forms.Label versionLabel;
+        private System.Windows.Forms.CheckBox RandomObjectIDs;
     }
 }

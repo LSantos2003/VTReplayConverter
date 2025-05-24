@@ -1,14 +1,18 @@
-﻿using System;
+﻿using K4os.Compression.LZ4;
+using ReplaySystem;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using K4os.Compression.LZ4;
 using UnityEngine;
+using UnityEngine.Profiling;
 using VTBitConverter;
 using VTOLVR.ReplaySystem;
+using static LockingRadar;
 
 namespace VTReplayConverter
 {
@@ -238,7 +242,58 @@ namespace VTReplayConverter
 				recorder.eventTrack.Add(eventKeyframe);
 			}
 			recorder.RecountKeys();
-		}
+
+			randomizeObjectId(recorder);
+        }
+
+		private static void randomizeObjectId(ReplayRecorder recorder)
+		{
+			if (!VTACMI.RandomObjectIds) return;
+
+            // here we want to reconcile all the map ids
+            Dictionary<int, int> newEntityDictMap = new Dictionary<int, int>();
+
+            // Both entityDict, and motionTracks both use the entityId as the primary key..
+            Dictionary<int, ReplayRecorder.ReplayEntity> newReplayEntityDict = new Dictionary<int, ReplayRecorder.ReplayEntity>();
+            foreach (ReplayRecorder.ReplayEntity item in recorder.entityDict.Values.ToList())
+            {
+                int oldId = item.id;
+                int newId = oldId + (new System.Random()).Next(50, 65535);
+                item.id = newId;
+                newEntityDictMap.Add(oldId, newId);
+                newReplayEntityDict.Add(newId, item);
+            }
+
+            Dictionary<int, MotionTrack> newReplayMotionTrack = new Dictionary<int, MotionTrack>();
+            foreach (MotionTrack item in recorder.motionTracks.Values.ToList())
+            {
+                int newId = newEntityDictMap[item.entityId];
+                item.entityId = newId;
+                newReplayMotionTrack.Add(newId, item);
+            }
+
+            recorder.entityDict = newReplayEntityDict;
+            recorder.motionTracks = newReplayMotionTrack;
+
+            recorder.customTracks.Values.ToList().ForEach(item =>
+            {
+                if (item.metadata.getEntityId() != -1 && newEntityDictMap.ContainsKey(item.metadata.getEntityId()))
+                {
+                    item.metadata.setEntityId(newEntityDictMap[item.metadata.getEntityId()]);
+                }
+                item.keyframes.ForEach(keyframe =>
+                {
+                    if (keyframe.GetType() == typeof(LockingRadar.RadarLockKeyframe))
+                    {
+                        LockingRadar.RadarLockKeyframe radar = (LockingRadar.RadarLockKeyframe)keyframe;
+                        if (newEntityDictMap.ContainsKey(radar.targetId))
+                        {
+                            radar.targetId = newEntityDictMap[radar.targetId];
+                        }
+                    }
+                });
+            });
+        }
 
 		public static int ReadInt()
 		{
@@ -292,7 +347,10 @@ namespace VTReplayConverter
 			void ReplaySerialize();
 
 			void ReplayDeserialize();
-		}
+
+            int getEntityId();
+            void setEntityId(int id);
+        }
 
 		public class SerializedReplay
 		{
