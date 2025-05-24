@@ -23,10 +23,15 @@ namespace VTReplayConverter
 
         private ReplayRecorder recorder;
 
+        private ACMIHex acmiHex;
+
+        private static int ConversionId = 0;
         public VTACMI(string vtrPath)
         {
             this.recorder = new ReplayRecorder();
             this.recorder.Awake();
+            this.acmiHex = new ACMIHex(-1);
+            ConversionId++;
             ReplaySerializer.LoadFromFile(vtrPath, this.recorder);
             ReplaySerializer.ClearSerializedReplay();
 
@@ -230,7 +235,7 @@ namespace VTReplayConverter
 
         private string BuildUpdateString(ReplayRecorder.ReplayEntity entity, float time)
         {
-            string entityHex = ACMIUtils.GetEntityHex(entity.id);
+            string entityHex = this.acmiHex.GetEntityHex(entity.id);
             Vector3 position;
             Vector3 eulerRotation;
             Quaternion rotation;
@@ -290,7 +295,7 @@ namespace VTReplayConverter
             string updateString = BuildJammerUpdateString(customTrack, entity, t);
             string typeString = "Missile";
             string shapeString = "vtolvr_ConePog.obj";
-            string parentHex = ACMIUtils.GetEntityHex(entity.id);
+            string parentHex = this.acmiHex.GetEntityHex(entity.id);
 
             string builtString = $"{updateString},Name=Jam,Type={typeString},Shape={shapeString},Parent={parentHex}";
             return builtString;
@@ -303,7 +308,7 @@ namespace VTReplayConverter
 
             if (segmentIndex >= 0)
             {
-                string jammerHex = ACMIUtils.GetJammerHex(customTrack.trackId);
+                string jammerHex = this.acmiHex.GetJammerHex(customTrack.trackId);
 
                 RadarJammer.JammerKeyframe jammerKeyFrame1 = (RadarJammer.JammerKeyframe)customTrack.keyframes[segmentIndex];
                 int nextIndex = segmentIndex >= customTrack.keyframes.Count - 1 ? segmentIndex : segmentIndex + 1;
@@ -344,7 +349,7 @@ namespace VTReplayConverter
 
             if (segmentIndex >= 0)
             {
-                string pooledHex = ACMIUtils.GetProjectileHex(customTrack.trackId, customTrack.reinitalizedCount);
+                string pooledHex = this.acmiHex.GetProjectileHex(customTrack.trackId, customTrack.reinitalizedCount);
 
                 VTRPooledProjectile.PooledProjectileKeyframe pooledProjectileKeyframe = (VTRPooledProjectile.PooledProjectileKeyframe)customTrack.keyframes[segmentIndex];
 
@@ -381,11 +386,11 @@ namespace VTReplayConverter
 
             if (segmentIndex >= 0)
             {
-                string entityHex = ACMIUtils.GetEntityHex(entity.id);
+                string entityHex = this.acmiHex.GetEntityHex(entity.id);
                 LockingRadar.RadarLockKeyframe lockKeyFrame = (LockingRadar.RadarLockKeyframe)customTrack.keyframes[segmentIndex];
 
                 if (lockKeyFrame.targetId >= 0)
-                    return $"{entityHex},LockedTargetMode=1,LockedTarget={ACMIUtils.GetEntityHex(lockKeyFrame.targetId)}";
+                    return $"{entityHex},LockedTargetMode=1,LockedTarget={this.acmiHex.GetEntityHex(lockKeyFrame.targetId)}";
 
 
                 return $"{entityHex},LockedTargetMode=0,LockedTarget=-1";
@@ -492,7 +497,7 @@ namespace VTReplayConverter
         {
 
 
-            string entityHex = ACMIUtils.GetBulletHex(bullet.bId);
+            string entityHex = this.acmiHex.GetBulletHex(bullet.bId);
             if (t >= bullet.endT)
             {
                 return $"-{entityHex}";

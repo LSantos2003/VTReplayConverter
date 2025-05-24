@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ACMI\ACMIAnimation.cs" />
+    <Compile Include="ACMI\ACMIHex.cs" />
     <Compile Include="ACMI\ACMILoadingBar.cs" />
     <Compile Include="ACMI\ACMIObjects.cs" />
     <Compile Include="ACMI\ACMIUtils.cs" />

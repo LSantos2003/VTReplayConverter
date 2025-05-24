@@ -76,26 +76,6 @@ namespace VTReplayConverter
             return new Vector3D(num, num4, z);
         }
 
-        public static string GetEntityHex(int trackId)
-        {
-            return (trackId + 1).ToString();
-        }
-
-        public static string GetJammerHex(int jammerId)
-        {
-            return (jammerId + 1).ToString() + "C";
-        }
-
-        public static string GetBulletHex(int bulletId)
-        {
-            return (bulletId + 1).ToString() + "B";
-        }
-
-        public static string GetProjectileHex(int projectileId, int instance)
-        {
-            return (projectileId + 1).ToString() + "A" + instance.ToString();
-        }
-
         public static Teams GetEntityTeam(ReplayRecorder.ReplayEntity entity)
         {
             switch ((VTACMI.ReplayActorEntityTypes)entity.entityType)
