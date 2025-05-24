@@ -30,7 +30,7 @@ namespace VTReplayConverter
         {
             this.recorder = new ReplayRecorder();
             this.recorder.Awake();
-            this.acmiHex = new ACMIHex(-1);
+            this.acmiHex = new ACMIHex(ConversionId);
             ConversionId++;
             ReplaySerializer.LoadFromFile(vtrPath, this.recorder);
             ReplaySerializer.ClearSerializedReplay();
