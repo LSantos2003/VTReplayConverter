@@ -69,6 +69,7 @@ Carrier:Watercraft.CVN-74.obj
 Artillery:vtolvr_Artillery.obj
 AH-6:Rotorcraft.MD 500.obj
 SU-47M:FixedWing.Su-47.obj
+F-22A:FixedWing.F-22.obj
 ADM-160J:Missile.AGM-84E.obj
 AGM-89:Missile.AGM-84E.obj
 AGM-145:Core.Missile.obj

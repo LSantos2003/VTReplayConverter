@@ -146,7 +146,7 @@ namespace VTReplayConverter
             Button button = new Button();
             this.Controls.Add(button);
             string folderName = Path.GetFileName(replayPath);
-            button.Text = folderName;
+            button.Text = !folderName.Contains("Autosave") ? folderName : $"{folderName} ({Directory.GetLastWriteTime(replayPath).ToString("d")})";
             button.Parent = this.ReplayButtonPanel;
             button.Size = templateButton.Size;
             button.Location = new Point(templateButton.Location.X, templateButton.Location.Y + (templateButton.Size.Height * buttonCount));
