@@ -6,6 +6,8 @@ Converts VTOL VR Tactical Replay Files Into ACMI Files for Tacview!
 - Download Tacview first! The version from their [website](https://www.tacview.net/product/about/en/) is highly recommended. Since it lets you open multiple Tacview windows at once. However there is a [steam version](https://store.steampowered.com/app/1174860/Tacview/) as well. Which only lets you open one tacview file at a time
 - Download and run VTRC_Installer.exe from the latest [release](https://github.com/LSantos2003/VTReplayConverter/releases)
 - Once VTRC is installed, uninstall the VTRC_Installer since it is no longer needed
+### Linux
+If you're on linux, use this [guide](./Linux.md) 
 
 
 ## Features
