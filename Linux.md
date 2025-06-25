@@ -91,6 +91,7 @@ To solve this, simply run
 WINEPREFIX=~/.VTReplayPrefix winetricks -f -q dotnet472
 ```
 *-f is 'Don't check whether packages were already installed'*
+
 *-q is 'Don't ask any questions, just install automatically'*
 
 # End of the guide so far
