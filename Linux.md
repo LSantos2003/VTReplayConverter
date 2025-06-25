@@ -1,5 +1,5 @@
 # Required tools/files
-- Install [wine](https://www.VTReplayPrefixhq.org/) with your package manager
+- Install [wine](https://www.winehq.org/) with your package manager
 - Install [winetricks](https://github.com/Winetricks/winetricks) (guides on their github page)
 - This [tacview](https://github.com/Vyrtuoz/Tacview/tree/master) repository
 - tacview and vtol vr on [steam](https://store.steampowered.com/)
