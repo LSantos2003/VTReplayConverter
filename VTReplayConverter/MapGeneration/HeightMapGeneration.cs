@@ -17,7 +17,7 @@ namespace VTReplayConverter
     public class HeightMapGeneration
     {
         public static string HeightMapLocation { get { return Path.Combine(Program.TacviewTerrainPath, "VTOL_VR_CUSTOM_MAP.raw"); } }
-        public static string XmlLocation { get { return Path.Combine(Program.TacviewTerrainPath, $"CustomHeightmapList.xml"); } }
+        public static string XmlLocation { get { return Path.Combine(Program.TacviewTerrainPath, "CustomHeightmapList.xml"); } }
         public static void ConvertHeightMap(string heightMapPath, string configPath)
         {
             if (!Directory.Exists(Program.TacviewTerrainPath))

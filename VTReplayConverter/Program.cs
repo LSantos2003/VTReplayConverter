@@ -20,6 +20,8 @@ namespace VTReplayConverter
 
         public static string VTReplaysPath;
 
+        public static string VFMReplaysPath;
+
         public static string AcmiSavePath;
 
         public static string TacviewTerrainPath;

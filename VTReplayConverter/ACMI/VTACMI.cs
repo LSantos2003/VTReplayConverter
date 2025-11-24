@@ -19,7 +19,7 @@ namespace VTReplayConverter
 
         public const float BulletPollRate = 0.35f;
 
-        static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         private ReplayRecorder recorder;
 
@@ -224,6 +224,11 @@ namespace VTReplayConverter
 
             string updateString = BuildUpdateString(entity, time);
             string typeString = GetType((ReplayActorEntityTypes)entity.entityType);
+            if (entity.metaData.label.Contains("Carrier"))
+            {
+                typeString = "AircraftCarrier";
+            }
+
             string shapeString = GetShape(entity);
             string colorString = GetColor((ReplayActorEntityTypes)entity.entityType);
             string coalitionString = GetCoalition((ReplayActorEntityTypes)entity.entityType);
@@ -479,7 +484,7 @@ namespace VTReplayConverter
                         continue;
                     }
 
-                    if (eventTrack is BulletEndKeyframe bulletEndKeyframe && bulletEndKeyframe.bId < bullets.Count)
+                    if (eventTrack is BulletEndKeyframe bulletEndKeyframe && bulletEndKeyframe.bId < bullets.Count && bulletEndKeyframe.bId >= 0)
                     {
                         bullets[bulletEndKeyframe.bId].endT = bulletEndKeyframe.t;
                     }
@@ -566,7 +571,6 @@ namespace VTReplayConverter
                 
             }
             
-
             string shapeString;
             switch (entityType)
             {
