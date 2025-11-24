@@ -224,7 +224,7 @@ namespace VTReplayConverter
 
             string updateString = BuildUpdateString(entity, time);
             string typeString = GetType((ReplayActorEntityTypes)entity.entityType);
-            if (entity.metaData.label.Contains("Carrier"))
+            if (entity.metaData.label.ToLower().Contains("carrier"))
             {
                 typeString = "AircraftCarrier";
             }
