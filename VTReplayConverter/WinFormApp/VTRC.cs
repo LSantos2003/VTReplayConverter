@@ -140,7 +140,7 @@ namespace VTReplayConverter
                 {
                     // Console.WriteLine("-----------------------");
                     replayButtonDict[pathToUse].BackColor = VTRConverterForm.ReplayNotConvertedColor;
-                    string folderName = Path.GetFileName(folderPath);
+                    string folderName = Path.GetFileName(pathToUse);
                     string savePath = Path.Combine(Program.AcmiSavePath, $"{folderName}.acmi");
                     await VTACMI.ConvertToACMIAsync(replayPath, savePath, isVFM);
                     replayButtonDict[pathToUse].BackColor = VTRConverterForm.ReplayConvertedColor;
