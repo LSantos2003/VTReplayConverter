@@ -117,6 +117,7 @@ namespace VTReplayConverter
             XDocument doc = new XDocument(new XElement("Resources", new XElement("CustomHeightmapList", new XElement("CustomHeightmap",
                                                 new XElement("File", $"VTOL_VR_CUSTOM_MAP.raw"),
                                                 new XElement("BigEndian", endian.ToString()),
+                                                new XElement("Signed", "false"),
                                                 new XElement("Width", width.ToString()),
                                                 new XElement("Height", height.ToString()),
                                                 new XElement("AltitudeFactor", altFactor.Invariant()),
@@ -135,7 +136,7 @@ namespace VTReplayConverter
                                                     new XElement("Longitude", geoLocations[3].Longitude.Invariant()),
                                                     new XElement("Latitude", geoLocations[3].Latitude.Invariant()))
                                                 ))));
-
+            
             Console.WriteLine($"Saving custom tacview custom XML to {xmlSavePath}");
             doc.Save(xmlSavePath);
 

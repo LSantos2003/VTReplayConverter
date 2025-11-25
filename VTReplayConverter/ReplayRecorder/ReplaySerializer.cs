@@ -166,78 +166,78 @@ namespace VTReplayConverter
 
 		private static void DeserializeV1(Stream fs, ReplayRecorder recorder)
 		{
-			List<ReplayRecorder.ReplayEntity> list = new List<ReplayRecorder.ReplayEntity>();
+			List<ReplayRecorder.ReplayEntity> entities = new List<ReplayRecorder.ReplayEntity>();
 			recorder.motionTracks.Clear();
-			int num = ReplaySerializer.ReadInt();
-			for (int i = 0; i < num; i++)
+			int mTrackCount = ReplaySerializer.ReadInt();
+			for (int trk = 0; trk < mTrackCount; trk++)
 			{
-				MotionTrack motionTrack = new MotionTrack();
-				motionTrack.entityId = ReplaySerializer.ReadInt();
-				ReplayRecorder.ReplayEntity replayEntity = new ReplayRecorder.ReplayEntity();
-				replayEntity.id = motionTrack.entityId;
-				replayEntity.entityType = ReplaySerializer.ReadInt();
-				list.Add(replayEntity);
+				MotionTrack mTrack = new MotionTrack();
+				mTrack.entityId = ReplaySerializer.ReadInt();
+				ReplayRecorder.ReplayEntity ent = new ReplayRecorder.ReplayEntity();
+				ent.id = mTrack.entityId;
+				ent.entityType = ReplaySerializer.ReadInt();
+				entities.Add(ent);
 				if (ReplaySerializer.ReadByte() > 0)
 				{
-					ReplayRecorder.TrackMetadata trackMetadata = new ReplayRecorder.TrackMetadata();
-					trackMetadata.Deserialize();
-					replayEntity.metaData = trackMetadata;
+					ReplayRecorder.TrackMetadata mt = new ReplayRecorder.TrackMetadata();
+					mt.Deserialize();
+					ent.metaData = mt;
 				}
-				int num2 = ReplaySerializer.ReadInt();
+				int kfCount = ReplaySerializer.ReadInt();
 				ReplayRecorder.MotionKeyframe prevKf = null;
-				for (int j = 0; j < num2; j++)
+				for (int i = 0; i < kfCount; i++)
 				{
-					ReplayRecorder.MotionKeyframe motionKeyframe = new ReplayRecorder.MotionKeyframe();
-					if (j == 0)
+					ReplayRecorder.MotionKeyframe kf = new ReplayRecorder.MotionKeyframe();
+					if (i == 0)
 					{
-						motionKeyframe.Deserialize();
+						kf.Deserialize();
 					}
 					else
 					{
-						motionKeyframe.DeserializeDelta(prevKf);
+						kf.DeserializeDelta(prevKf);
 					}
-					prevKf = motionKeyframe;
-					motionTrack.Add(motionKeyframe);
+					prevKf = kf;
+					mTrack.Add(kf);
 				}
-				recorder.motionTracks.Add(motionTrack.entityId, motionTrack);
+				recorder.motionTracks.Add(mTrack.entityId, mTrack);
 			}
-			recorder.SetEntities(list);
+			recorder.SetEntities(entities);
 			recorder.customTracks.Clear();
-			int num3 = ReplaySerializer.ReadInt();
-			for (int k = 0; k < num3; k++)
+			int cTrackCount = ReplaySerializer.ReadInt();
+			for (int trk2 = 0; trk2 < cTrackCount; trk2++)
 			{
-				CustomTrack customTrack = new CustomTrack();
-				customTrack.trackId = ReplaySerializer.ReadInt();
-				string text = ReplaySerializer.ReadString();
-				Type type = Type.GetType(text);
-				customTrack.keyframeType = type;
-				string text2 = ReplaySerializer.ReadString();
-				Type type2 = Type.GetType(text2);
-				if (type2 == null)
+				CustomTrack cTrack = new CustomTrack();
+				cTrack.trackId = ReplaySerializer.ReadInt();
+				string kfTypeName = ReplaySerializer.ReadString();
+				Type kfType = Type.GetType(kfTypeName);
+				cTrack.keyframeType = kfType;
+				string metadataTypeName = ReplaySerializer.ReadString();
+				Type type = Type.GetType(metadataTypeName);
+				if (type == null)
 				{
-					Console.WriteLine("Failed to parse metadata type: " + text2 + " for keyframeType: " + text);
+					Console.Write("Failed to parse metadata type: " + metadataTypeName + " for keyframeType: " + kfTypeName);
 				}
-				object obj = Activator.CreateInstance(type2);
-				customTrack.metadata = (ReplaySerializer.IReplaySerializable)obj;
-				((ReplaySerializer.IReplaySerializable)obj).ReplayDeserialize();
-				int num4 = ReplaySerializer.ReadInt();
-				for (int l = 0; l < num4; l++)
+				object mtObj = Activator.CreateInstance(type);
+				cTrack.metadata = (ReplaySerializer.IReplaySerializable)mtObj;
+				((ReplaySerializer.IReplaySerializable)mtObj).ReplayDeserialize();
+				int kfCount2 = ReplaySerializer.ReadInt();
+				for (int j = 0; j < kfCount2; j++)
 				{
-					ReplayRecorder.Keyframe keyframe = (ReplayRecorder.Keyframe)Activator.CreateInstance(type);
-					keyframe.Deserialize();
-					customTrack.Add(keyframe);
+					ReplayRecorder.Keyframe kf2 = (ReplayRecorder.Keyframe)Activator.CreateInstance(kfType);
+					kf2.Deserialize();
+					cTrack.Add(kf2);
 				}
-				recorder.customTracks.Add(customTrack.trackId, customTrack);
+				recorder.customTracks.Add(cTrack.trackId, cTrack);
 			}
 			recorder.eventTrack.keyframes.Clear();
-			int num5 = ReplaySerializer.ReadInt();
-			for (int m = 0; m < num5; m++)
+			int eCount = ReplaySerializer.ReadInt();
+			for (int e = 0; e < eCount; e++)
 			{
-				int key = (int)ReplaySerializer.ReadByte();
-				//Problem Line
-				ReplayRecorder.EventKeyframe eventKeyframe = (ReplayRecorder.EventKeyframe)Activator.CreateInstance(ReplaySerializer.keyframeTypes[key]);
-				eventKeyframe.Deserialize();
-				recorder.eventTrack.Add(eventKeyframe);
+				int typeIdx = (int)ReplaySerializer.ReadByte();
+				Console.WriteLine(typeIdx);
+				ReplayRecorder.EventKeyframe kf3 = (ReplayRecorder.EventKeyframe)Activator.CreateInstance(ReplaySerializer.keyframeTypes[typeIdx]);
+				kf3.Deserialize();
+				recorder.eventTrack.Add(kf3);
 			}
 			recorder.RecountKeys();
 		}
