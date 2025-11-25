@@ -190,7 +190,7 @@ namespace VTReplayConverter
             }
         }
 
-        private static Vector3 ToEulerAngles(Quaternion q1)
+        public static Vector3 ToEulerAngles(Quaternion q1)
         {
             float sqw = q1.w * q1.w;
             float sqx = q1.x * q1.x;

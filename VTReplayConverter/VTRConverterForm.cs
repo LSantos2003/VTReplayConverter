@@ -128,17 +128,24 @@ namespace VTReplayConverter
                 MessageBox.Show("WARNING: No VTOL VR Tactical Replay Files detected. Go play some VTOL VR!");
             }
 
-            string[] replayPaths = Directory.GetDirectories(Program.VTReplaysPath);
+            string[] replayPathsVTOL = Directory.GetDirectories(Program.VTReplaysPath);
+            string[] replayPathsVFM = Directory.GetFiles(Program.VFMReplaysPath);
 
             int replayButtonCount = 0;
-            foreach(string replayPath in replayPaths)
+            foreach(string replayPath in replayPathsVTOL)
             {
-
                 CreateReplayButton(this.TemplateButton, replayPath, replayButtonCount);
                 replayButtonCount++;
             }
 
-
+            foreach(string replayPath in replayPathsVFM)
+            {
+                if (replayPath.Contains(".vrb"))
+                {
+                    CreateReplayButtonVFM(this.TemplateButton, replayPath, replayButtonCount);
+                    replayButtonCount++;
+                }
+            }
         }
 
         private void CreateReplayButton(Button templateButton, string replayPath, int buttonCount)
@@ -163,6 +170,31 @@ namespace VTReplayConverter
             this.replayButtonDict[replayPath] = button;
         }
 
+        private void CreateReplayButtonVFM(Button templateButton, string replayPath, int buttonCount)
+        {
+            Button button = new Button();
+            this.Controls.Add(button);
+            string fileName = "(VFM)" + Path.GetFileNameWithoutExtension(replayPath);
+            button.Text = fileName;
+            button.Parent = this.ReplayButtonPanel;
+            button.Size = templateButton.Size;
+            button.Location = new Point(templateButton.Location.X, templateButton.Location.Y + (templateButton.Size.Height * buttonCount));
+            button.ForeColor = templateButton.ForeColor;
+            button.BackColor = ACMIUtils.IsReplayConverted(replayPath) ? ReplayConvertedColor : ReplayNotConvertedColor;
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.MouseOverBackColor = templateButton.FlatAppearance.MouseOverBackColor;
+            button.FlatAppearance.MouseDownBackColor = templateButton.FlatAppearance.MouseDownBackColor;
+            button.Font = templateButton.Font;
+            button.BringToFront();
+
+            button.MouseDown += (sender, EventArgs) => {
+                HeightMapGeneration.DeleteHeightMap(); //TODO Handle VFM maps
+                OpenReplay(sender, EventArgs, button, replayPath);
+            };
+
+            this.replayButtonDict[replayPath] = button;
+        }
+
         private void refreshReplaysButton_Click(object sender, EventArgs e)
         {
             foreach(var button in this.replayButtonDict)
@@ -175,21 +207,46 @@ namespace VTReplayConverter
         {
             
             string folderPath = replayPath;
-            string folderName = Path.GetFileName(folderPath);
+            string fileName = Path.GetFileName(folderPath);
 
-            this.progressTextPrefix = $"Converting {folderName}";
+            this.progressTextPrefix = $"Converting {fileName}";
 
             bool leftClick = args.Button == MouseButtons.Left;
             bool rightClick = args.Button == MouseButtons.Right;
 
             if (leftClick)
             {
-                this.progressTextPrefix = $"Opening {folderName}";
-                VTRC.OpenFileFromPath(folderPath, folderName, true, folderName.Contains("Autosave"), replayButton, false);
+                this.progressTextPrefix = $"Opening {fileName}";
+                VTRC.OpenFileFromPath(folderPath, fileName, true, fileName.Contains("Autosave"), replayButton, false);
             }else if (rightClick)
             {
-                this.progressTextPrefix = $"Re-Converting {folderName}";
-                VTRC.OpenFileFromPath(folderPath, folderName, false, true, replayButton, true);
+                this.progressTextPrefix = $"Re-Converting {fileName}";
+                VTRC.OpenFileFromPath(folderPath, fileName, false, true, replayButton, true);
+            }
+
+
+        }
+
+        private void OpenReplayVFM(object sender, MouseEventArgs args, Button replayButton, string replayPath)
+        {
+
+            string folderPath = replayPath;
+            string fileName = Path.GetFileNameWithoutExtension(folderPath);
+
+            this.progressTextPrefix = $"Converting {fileName}";
+
+            bool leftClick = args.Button == MouseButtons.Left;
+            bool rightClick = args.Button == MouseButtons.Right;
+
+            if (leftClick)
+            {
+                this.progressTextPrefix = $"Opening {fileName}";
+                VTRC.OpenFileFromPath(folderPath, fileName, true, false, replayButton, false);
+            }
+            else if (rightClick)
+            {
+                this.progressTextPrefix = $"Re-Converting {fileName}";
+                VTRC.OpenFileFromPath(folderPath, fileName, false, true, replayButton, true);
             }
 
 

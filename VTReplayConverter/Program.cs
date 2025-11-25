@@ -82,6 +82,9 @@ namespace VTReplayConverter
             VTReplaysPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             VTReplaysPath = Path.Combine(VTReplaysPath, "Boundless Dynamics, LLC\\VTOLVR\\SaveData\\Replays");
 
+            VFMReplaysPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),"AppData","LocalLow");
+            VFMReplaysPath = Path.Combine(VFMReplaysPath, "Boundless Dynamics, LLC\\VFM\\Replays");
+
             string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string strWorkPath = System.IO.Path.GetDirectoryName(strExeFilePath);
             AcmiSavePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VTReplayConverter"), "TACVIEW SAVES");

@@ -206,6 +206,28 @@ namespace VTReplayConverter
             System.Diagnostics.Process.Start(savePath);
         }
 
+        [Command("ConvertVFM", "Converts VFM File")]
+        static void ConvertVFMTrackFile(string args)
+        {
+            Console.WriteLine("-----------------------");
+            string readPath = Path.Combine(Program.VFMReplaysPath, $"{args}.vrb");
+            string savePath = Path.Combine(Program.AcmiSavePath, $"{args}.acmi");
+
+            if (!File.Exists(readPath))
+            {
+                Console.WriteLine($"File does not exist at {readPath}");
+                return;
+            }
+
+            Console.WriteLine("Converting VRB File");
+            VTACMI.ConvertToACMI(readPath, savePath, true);
+            Console.WriteLine("File converted!");
+
+
+            System.Diagnostics.Process.Start(savePath);
+
+        }
+
         [Command("ConvertMap", "Converts Map File")]
         static void ConvertMap(string args)
         {

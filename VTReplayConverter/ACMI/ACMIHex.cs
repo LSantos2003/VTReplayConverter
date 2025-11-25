@@ -17,7 +17,8 @@ namespace VTReplayConverter
 
         private bool offset = false;
         private int conversionId;
-
+        
+        //[ID]
         public string GetEntityHex(int trackId)
         {
             if (this.offset)
@@ -27,6 +28,7 @@ namespace VTReplayConverter
             return (trackId + 1).ToString();
         }
 
+        //[ID]C
         public string GetJammerHex(int jammerId)
         {
             if (this.offset)
@@ -36,6 +38,7 @@ namespace VTReplayConverter
             return (jammerId + 1).ToString() + "C";
         }
 
+        //[ID]b
         public string GetBulletHex(int bulletId)
         {
             if (this.offset)
@@ -45,6 +48,7 @@ namespace VTReplayConverter
             return (bulletId + 1).ToString() + "B";
         }
 
+        //[ID]A[instance]
         public string GetProjectileHex(int projectileId, int instance)
         {
             if (this.offset)
@@ -54,5 +58,15 @@ namespace VTReplayConverter
             return (projectileId + 1).ToString() + "A" + instance.ToString();
         }
 
+        //[ID]F
+        public string GetFlareHex(int flareId)
+        {
+            if (this.offset)
+            {
+                return $"{this.conversionId.ToString("X")}B{flareId + 1}F";
+            }
+
+            return (flareId + 1).ToString() + "F";
+        }
     }
 }

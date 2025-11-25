@@ -19,6 +19,8 @@ namespace VTReplayConverter
 
         public const float BulletPollRate = 0.35f;
 
+        private bool isVFM = false;
+
         private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         private ReplayRecorder recorder;
@@ -26,31 +28,40 @@ namespace VTReplayConverter
         private ACMIHex acmiHex;
 
         private static int ConversionId = 0;
-        public VTACMI(string vtrPath)
+
+        private int flareCount = 0;
+
+        private List<float> flareDespawnTimes = new List<float>();
+
+        private const float FlareLifeTime = 4f;
+
+        public VTACMI(string vtrPath, bool isVFM)
         {
             this.recorder = new ReplayRecorder();
             this.recorder.Awake();
             this.acmiHex = new ACMIHex(ConversionId);
+            this.isVFM = isVFM;
+
             ConversionId++;
             ReplaySerializer.LoadFromFile(vtrPath, this.recorder);
             ReplaySerializer.ClearSerializedReplay();
 
         }
 
-        public static async void ConvertToACMI(string vtrPath, string tacviewSavePath)
+        public static async void ConvertToACMI(string vtrPath, string tacviewSavePath, bool isVFM = false)
         {
-            VTACMI converter = new VTACMI(vtrPath);
+            VTACMI converter = new VTACMI(vtrPath, isVFM);
             converter.ConvertFromPath(vtrPath, tacviewSavePath);
             converter.recorder.Reset();
             ACMILoadingBar.ResetBar();
         }
 
 
-        public static async Task ConvertToACMIAsync(string vtrPath, string tacviewSavePath)
+        public static async Task ConvertToACMIAsync(string vtrPath, string tacviewSavePath, bool isVFM = false)
         {
             await semaphore.WaitAsync();
          
-            VTACMI converter = new VTACMI(vtrPath);
+            VTACMI converter = new VTACMI(vtrPath, isVFM);
             semaphore.Release(); // Release the Replay Serializer
 
             converter.ConvertFromPath(vtrPath, tacviewSavePath);
@@ -106,6 +117,16 @@ namespace VTReplayConverter
                 }
             }
 
+            foreach (ReplayRecorder.Keyframe keyFrame in this.recorder.eventTrack.keyframes)
+            {
+                if (!tracksKeyFrameDict.ContainsKey(keyFrame.t))
+                {
+                    tracksKeyFrameDict.Add(keyFrame.t, new List<object>());
+                }
+
+                tracksKeyFrameDict[keyFrame.t].Add(this.recorder.eventTrack);
+            }
+
             List<BulletReplay> bullets = GetBullets();
 
             Console.WriteLine($"Bullet Count: {bullets.Count}");
@@ -126,6 +147,7 @@ namespace VTReplayConverter
                     float t = trackKeyframe.Key;
 
                     bool bulletSameFrame = VTACMI.IncludeBullets ? ConvertBullets(streamWriter, bullets, t) : false;
+                    //bool bulletSameFrame = false;
 
                     if (!bulletSameFrame)
                         streamWriter.WriteLine($"#{t}");
@@ -136,11 +158,24 @@ namespace VTReplayConverter
                         switch (track)
                         {
                             case ReplayRecorder.ReplayEntity entity:
+                                //Handles VFM Missiles
+                                if(entity.metaData == null)
+                                {
+                                    Console.WriteLine($"Null meta data, entity {entity.id}");
+                                    entity.metaData = new ReplayRecorder.TrackMetadata();
+                                    entity.metaData.label = "AIM-9";
+                                    entity.metaData.identity = -1;
+                                    entity.metaData.label = "AIM-9";
+                                    entity.entityType = (int)ReplayActorEntityTypes.Missile;
+                                }
                                 string tacviewString = !entity.initalized ? BuildInitString(entity, t) : BuildUpdateString(entity, t);
                                 streamWriter.WriteLine(tacviewString);
                                 break;
                             case CustomTrack customTrack:
                                 HandleCustomTrack(streamWriter, customTrack, t);
+                                break;
+                            case EventTrack eventTrack:
+                                HandleEventTrack(streamWriter, eventTrack, t);
                                 break;
                             default:
                                 break;
@@ -161,6 +196,12 @@ namespace VTReplayConverter
                     }
                 }
 
+                //Hacky way to despawn flares
+                for(int i = 0; i < this.flareCount; i++)
+                {
+                    streamWriter.WriteLine($"#{this.flareDespawnTimes[i]}");
+                    streamWriter.WriteLine($"-{acmiHex.GetFlareHex(i)}");
+                }
             }
 
 
@@ -229,7 +270,7 @@ namespace VTReplayConverter
                 typeString = "AircraftCarrier";
             }
 
-            string shapeString = GetShape(entity);
+            string shapeString = this.isVFM ? GetShapeVFM(entity) : GetShape(entity);
             string colorString = GetColor((ReplayActorEntityTypes)entity.entityType);
             string coalitionString = GetCoalition((ReplayActorEntityTypes)entity.entityType);
 
@@ -247,6 +288,7 @@ namespace VTReplayConverter
             bool lastFrame;
 
             ACMIUtils.GetPositionAndRotation(this.recorder.motionTracks[entity.id], time, out position, out eulerRotation, out rotation, out lastFrame);
+
             if (entity.metaData.label.Contains("Carrier"))
             {
                 Vector3 temp = position;
@@ -291,6 +333,33 @@ namespace VTReplayConverter
 
                 string tacviewString = BuildPooledUpdateString(customTrack, t);
                 streamWriter.WriteLine(tacviewString);
+            }
+        }
+
+        private void HandleEventTrack(StreamWriter streamWriter, EventTrack eventTrack, float t)
+        {
+            int segmentIndex;
+            ACMIUtils.FindSegment<ReplayRecorder.EventKeyframe>(eventTrack, out segmentIndex, t);
+
+            if(segmentIndex >= 0 && eventTrack[segmentIndex].eventType == (int)EventTypes.Flare)
+            {
+                string flareHex = this.acmiHex.GetFlareHex(this.flareCount);
+                this.flareCount++;
+
+                ReplayRecorder.WorldEventKeyframe flareEvent = (ReplayRecorder.WorldEventKeyframe)eventTrack[segmentIndex];
+                FixedPoint fp = flareEvent.fp;
+                Quaternion rotation = flareEvent.rotation;
+
+
+                Vector3 pos = fp.globalPoint.toVector3;
+                Vector3 eulerRotation = ACMIUtils.ToEulerAngles(rotation);
+
+                Vector3D gpsPosition = ACMIUtils.WorldPositionToGPSCoords(pos);
+                string gpsString = $"{gpsPosition.y.Invariant()}|{gpsPosition.x.Invariant()}|{gpsPosition.z.Invariant()}|{(-eulerRotation.z).Invariant()}|{(-eulerRotation.x).Invariant()}|{eulerRotation.y.Invariant()}";
+                string flareString = $"{flareHex},T={gpsString},Type=Flare";
+
+                this.flareDespawnTimes.Add(t + VTACMI.FlareLifeTime);
+                streamWriter.WriteLine(flareString);
             }
         }
 
@@ -592,6 +661,32 @@ namespace VTReplayConverter
                     break;
                 case ReplayActorEntityTypes.Missile:
                     shapeString = "Missile.AIM-120C.obj";
+                    break;
+                default:
+                    shapeString = "FixedWing.F-15.obj";
+                    break;
+            }
+
+            return shapeString;
+        }
+
+        private string GetShapeVFM(ReplayRecorder.ReplayEntity entity)
+        {
+            int type = entity.metaData.identity;
+            string shapeString;
+            switch (type)
+            {
+                case 0:
+                    shapeString = "FixedWing.F-15.obj";
+                    break;
+                case 1:
+                    shapeString = "FixedWing.F-16.obj";
+                    break;
+                case 2:
+                    shapeString = "FixedWing.F-18E.obj";
+                    break;
+                case -1:
+                    shapeString = "Missile.AIM-9M.obj";
                     break;
                 default:
                     shapeString = "FixedWing.F-15.obj";

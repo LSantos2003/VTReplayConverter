@@ -141,7 +141,17 @@ namespace VTReplayConverter
 
         }
 
+        public static void DeleteHeightMap()
+        {
+            if (File.Exists(HeightMapLocation))
+                File.Delete(HeightMapLocation);
 
+            if (File.Exists(XmlLocation))
+                File.Delete(XmlLocation);
+
+
+
+        }
         private static GeoLocation[] GenerateCoords(int mapSize, Vector3 mapOffset)
         {
             GeoLocation[] geoLocations = new GeoLocation[4];

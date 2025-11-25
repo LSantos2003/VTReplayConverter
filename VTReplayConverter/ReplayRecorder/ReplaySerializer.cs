@@ -97,6 +97,7 @@ namespace VTReplayConverter
 			ReplaySerializer.keyframeTypes.Add(2, typeof(ReplayRecorder.WorldEventKeyframe));
 			ReplaySerializer.keyframeTypes.Add(3, typeof(BulletEventKeyframe));
 			ReplaySerializer.keyframeTypes.Add(4, typeof(BulletEndKeyframe));
+			ReplaySerializer.keyframeTypes.Add(5, typeof(DamageKeyframe));
 			ReplaySerializer.keyframeTypeIndices = new Dictionary<Type, int>();
 			foreach (KeyValuePair<int, Type> keyValuePair in ReplaySerializer.keyframeTypes)
 			{
@@ -233,6 +234,7 @@ namespace VTReplayConverter
 			for (int m = 0; m < num5; m++)
 			{
 				int key = (int)ReplaySerializer.ReadByte();
+				//Problem Line
 				ReplayRecorder.EventKeyframe eventKeyframe = (ReplayRecorder.EventKeyframe)Activator.CreateInstance(ReplaySerializer.keyframeTypes[key]);
 				eventKeyframe.Deserialize();
 				recorder.eventTrack.Add(eventKeyframe);

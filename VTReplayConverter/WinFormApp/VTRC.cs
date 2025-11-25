@@ -10,20 +10,20 @@ namespace VTReplayConverter
 {
     public class VTRC
     {
-        public static async Task OpenFileFromPath(string folderPath, string folderName, bool openInTacview, bool convert)
+        public static async Task OpenFileFromPath(string folderPath, string fileName, bool openInTacview, bool convert)
         {
             if (Program.ConvertingFile)
                 return;
 
             Program.ConvertingFile = true;
 
-            ConvertMapFromPath(folderPath, folderName);
+            ConvertMapFromPath(folderPath, fileName);
 
-            string tacviewSavePath = Path.Combine(Program.AcmiSavePath, $"{folderName}.acmi");
+            string tacviewSavePath = Path.Combine(Program.AcmiSavePath, $"{fileName}.acmi");
 
             if (!File.Exists(tacviewSavePath) || convert)
             {
-                await ConvertTrackFromPath(folderPath, folderName);
+                await ConvertTrackFromPath(folderPath, fileName);
             }
 
             Program.ConvertingFile = false;
@@ -32,7 +32,7 @@ namespace VTReplayConverter
                 System.Diagnostics.Process.Start(tacviewSavePath);
         }
 
-        public static async void OpenFileFromPath(string folderPath, string folderName, bool openInTacview, bool convert, Button replayButton, bool changeButtonColor)
+        public static async void OpenFileFromPath(string folderPath, string fileName, bool openInTacview, bool convert, Button replayButton, bool changeButtonColor)
         {
             if (Program.ConvertingFile)
                 return;
@@ -40,11 +40,11 @@ namespace VTReplayConverter
             if (changeButtonColor)
                 replayButton.BackColor = VTRConverterForm.ReplayNotConvertedColor;
 
-            await OpenFileFromPath(folderPath, folderName, openInTacview, convert);
+            await OpenFileFromPath(folderPath, fileName, openInTacview, convert);
             replayButton.BackColor = VTRConverterForm.ReplayConvertedColor;
         }
 
-        public static void ConvertMapFromPath(string folderPath, string folderName)
+        public static void ConvertMapFromPath(string folderPath, string fileName)
         {
             if (!Directory.Exists(folderPath))
             {
@@ -74,11 +74,17 @@ namespace VTReplayConverter
 
         }
 
-        public static async Task ConvertTrackFromPath(string folderPath, string folderName)
+        public static async Task ConvertTrackFromPath(string folderPath, string fileName)
         {
             Console.WriteLine("-----------------------");
             string readPath = Path.Combine(folderPath, $"replay.vtr");
-            string savePath = Path.Combine(Program.AcmiSavePath, $"{folderName}.acmi");
+            bool isVFM = fileName.Contains(".vrb");
+            //VFM Detection
+            if (isVFM)
+            {
+                readPath = Path.Combine(folderPath);
+            }
+            string savePath = Path.Combine(Program.AcmiSavePath, $"{fileName}.acmi");
             if (!File.Exists(readPath))
             {
                 Console.WriteLine($"File does not exist at {readPath}");
@@ -86,7 +92,7 @@ namespace VTReplayConverter
             }
 
             Console.WriteLine("Converting VTR File");
-            await Task.Run(() => VTACMI.ConvertToACMI(readPath, savePath));
+            await Task.Run(() => VTACMI.ConvertToACMI(readPath, savePath, isVFM));
             Console.WriteLine("File converted!");
         }
 
@@ -105,7 +111,8 @@ namespace VTReplayConverter
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            string[] vtrPaths = Directory.GetFiles(Program.VTReplaysPath, "*.*vtr", SearchOption.AllDirectories);
+            List<string> replayPaths = Directory.GetFiles(Program.VTReplaysPath, "*.*vtr", SearchOption.AllDirectories).ToList();
+            replayPaths.AddRange(Directory.GetFiles(Program.VFMReplaysPath, "*.vrb", SearchOption.AllDirectories));
 
             // Console.WriteLine("-----------------------");
             // Console.WriteLine("Converting all VTR files\n");
@@ -113,10 +120,14 @@ namespace VTReplayConverter
             int staggerMilliseconds = 500;
             var tasks = new List<Task>();
 
-            for (int i = 0; i < vtrPaths.Length; i++)
+            for (int i = 0; i < replayPaths.Count; i++)
             {
-                string vtrPath = vtrPaths[i];
-                string folderPath = Path.GetDirectoryName(vtrPath);
+                string replayPath = replayPaths[i];
+                string folderPath = Path.GetDirectoryName(replayPath);
+
+                //VFM Check
+                bool isVFM = replayPath.Contains(".vrb");
+                string pathToUse = isVFM ? replayPath : folderPath;
 
                 if (!reConvert && ACMIUtils.IsReplayConverted(folderPath))
                     continue;
@@ -128,12 +139,12 @@ namespace VTReplayConverter
                 tasks.Add(Task.Run(async () =>
                 {
                     // Console.WriteLine("-----------------------");
-                    replayButtonDict[Path.GetDirectoryName(vtrPath)].BackColor = VTRConverterForm.ReplayNotConvertedColor;
+                    replayButtonDict[pathToUse].BackColor = VTRConverterForm.ReplayNotConvertedColor;
                     string folderName = Path.GetFileName(folderPath);
                     string savePath = Path.Combine(Program.AcmiSavePath, $"{folderName}.acmi");
-                    await VTACMI.ConvertToACMIAsync(vtrPath, savePath);
-                    replayButtonDict[Path.GetDirectoryName(vtrPath)].BackColor = VTRConverterForm.ReplayConvertedColor;
-                    replayButtonDict[Path.GetDirectoryName(vtrPath)].Enabled = true;
+                    await VTACMI.ConvertToACMIAsync(replayPath, savePath, isVFM);
+                    replayButtonDict[pathToUse].BackColor = VTRConverterForm.ReplayConvertedColor;
+                    replayButtonDict[pathToUse].Enabled = true;
                 }));
             }
 
