@@ -366,6 +366,20 @@ namespace VTReplayConverter
 
                 this.flareDespawnTimes.Add(t + VTACMI.FlareLifeTime);
                 streamWriter.WriteLine(flareString);
+            }else if (segmentIndex >= 0 && eventTrack[segmentIndex].eventType == (int)EventTypes.Damage)
+            {
+
+                DamageKeyframe damageFrame = (DamageKeyframe)eventTrack[segmentIndex];
+                string entityHex = acmiHex.GetEntityHex(damageFrame.targetId);
+
+                ReplayRecorder.ReplayEntity entity = this.recorder.GetEntity(damageFrame.targetId);
+
+                float damage = 0.16f;
+                float minHealth = 1 - (damage * 4f);
+
+                entity.pseudoHealth -= entity.pseudoHealth <= minHealth ? 0f : damage;
+                string colorChangeString = $"{entityHex},Visible={entity.pseudoHealth}";
+                streamWriter.WriteLine(colorChangeString);
             }
         }
 

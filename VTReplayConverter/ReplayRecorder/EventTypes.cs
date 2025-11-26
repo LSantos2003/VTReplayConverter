@@ -11,6 +11,8 @@ namespace VTReplayConverter
 		Explosion,
 		Bullet,
 		Flare,
-		Chaff
+		Chaff,
+		BulletHit,
+		Damage
 	}
 }

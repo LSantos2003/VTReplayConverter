@@ -128,6 +128,9 @@ namespace VTReplayConverter
 
 			//VTReplayConvert Stuff
 			public bool initalized = false;
+
+			//Health to keep track of VFM damage
+			public float pseudoHealth = 1;
 		}
 
 		public class Keyframe
