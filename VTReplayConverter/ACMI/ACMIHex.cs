@@ -38,7 +38,7 @@ namespace VTReplayConverter
             return (jammerId + 1).ToString() + "C";
         }
 
-        //[ID]b
+        //[ID]B
         public string GetBulletHex(int bulletId)
         {
             if (this.offset)

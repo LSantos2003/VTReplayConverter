@@ -43,7 +43,7 @@ namespace VTReplayConverter
             this.isVFM = isVFM;
 
             ConversionId++;
-            ReplaySerializer.LoadFromFile(vtrPath, this.recorder);
+            ReplaySerializer.LoadFromFile(vtrPath, this.recorder, this.isVFM);
             ReplaySerializer.ClearSerializedReplay();
 
         }
@@ -205,7 +205,7 @@ namespace VTReplayConverter
             }
 
 
-            ACMIUtils.ReplaceWithZippedVersion(tacviewSavePath);
+            //ACMIUtils.ReplaceWithZippedVersion(tacviewSavePath);
 
             float fileSize = new FileInfo(tacviewSavePath).Length;
             fileSize /= 1024*1024;
@@ -256,6 +256,12 @@ namespace VTReplayConverter
                 }
             }
 
+
+        }
+
+        //TODO: Implement
+        public static void DebugVFM(string vfmPath)
+        {
 
         }
 
@@ -546,8 +552,8 @@ namespace VTReplayConverter
                         bullet.startT = bulletEvent.t;
                         bullet.currentT = bulletEvent.t;
                         bullet.bId = bulletEvent.bId;
-                        bullet.lifeTime = bulletEvent.lifeTime;
-                        bullet.endT = bullet.startT + bullet.lifeTime;
+                        bullet.lifeTime = this.isVFM ? bulletEvent.endT - bullet.startT : bulletEvent.lifeTime;
+                        bullet.endT = this.isVFM ? bulletEvent.endT : bullet.startT + bullet.lifeTime;
 
                         bullets.Add(bullet);
                         continue;
@@ -569,8 +575,6 @@ namespace VTReplayConverter
 
         private string BuildBulletUpdateString(BulletReplay bullet, float t)
         {
-
-
             string entityHex = this.acmiHex.GetBulletHex(bullet.bId);
             if (t >= bullet.endT)
             {

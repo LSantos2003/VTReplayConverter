@@ -14,14 +14,22 @@ namespace VTOLVR.ReplaySystem
 
 		public Vector3 velocity;
 
+		//Not in VFM
 		public float mass;
 
 		public int bId;
 
+		//In VFM
+		public FixedPoint endPt;
+		public Vector3 endVel;
+		public float endT;
+
+		//Not in VFM
 		public float lifeTime;
 
 		private static int nextId;
 
+		private List<int> bulletIds = new List<int>();
 		protected override void OnSerialize()
 		{
 			base.OnSerialize();
@@ -37,11 +45,23 @@ namespace VTOLVR.ReplaySystem
 			base.OnDeserialize();
 			this.fp = ReplaySerializer.ReadFixedPoint();
 			this.velocity = ReplaySerializer.ReadVector3();
-			this.mass = ReplaySerializer.ReadFloat();
+			if (!ReplaySerializer.ConvertingVFM) { this.mass = ReplaySerializer.ReadFloat(); }
 			this.bId = ReplaySerializer.ReadInt();
-			this.lifeTime = (float)ReplaySerializer.ReadByte();
+
+			if (ReplaySerializer.ConvertingVFM)
+            {
+				this.endPt = ReplaySerializer.ReadFixedPoint();
+				this.endVel = ReplaySerializer.ReadVector3();
+				this.endT = ReplaySerializer.ReadFloat();
+			}
+
+			if (!ReplaySerializer.ConvertingVFM){this.lifeTime = (float)ReplaySerializer.ReadByte();}
 		}
 
+		private string VectorToString(Vector3 vector)
+        {
+			return $"{vector.x},{vector.y},{vector.z}";
+        }
 		public static void RecordStopEvent(int bId)
 		{
 			BulletEndKeyframe bulletEndKeyframe = new BulletEndKeyframe();

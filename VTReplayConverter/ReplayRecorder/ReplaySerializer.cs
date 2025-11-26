@@ -14,6 +14,8 @@ namespace VTReplayConverter
 {
 	public class ReplaySerializer
 	{
+		public static bool ConvertingVFM = false;
+
 		private static byte[] kfBuffer = new byte[1024];
 
 		private static byte[] lz4Buffer = new byte[1];
@@ -29,7 +31,6 @@ namespace VTReplayConverter
 		private static byte[] decompressBuffer = new byte[1];
 
 		private static Stream dsStream = null;
-
 
 		public static void ClearSerializedReplay()
 		{
@@ -98,6 +99,7 @@ namespace VTReplayConverter
 			ReplaySerializer.keyframeTypes.Add(3, typeof(BulletEventKeyframe));
 			ReplaySerializer.keyframeTypes.Add(4, typeof(BulletEndKeyframe));
 			ReplaySerializer.keyframeTypes.Add(5, typeof(DamageKeyframe));
+
 			ReplaySerializer.keyframeTypeIndices = new Dictionary<Type, int>();
 			foreach (KeyValuePair<int, Type> keyValuePair in ReplaySerializer.keyframeTypes)
 			{
@@ -105,8 +107,9 @@ namespace VTReplayConverter
 			}
 		}
 
-		public static void LoadFromFile(string filepath, ReplayRecorder recorder)
+		public static void LoadFromFile(string filepath, ReplayRecorder recorder, bool isVFM = false)
 		{
+			ConvertingVFM = isVFM;
 			ReplaySerializer.Deserialize(filepath, recorder);
 		}
 
@@ -234,7 +237,8 @@ namespace VTReplayConverter
 			for (int e = 0; e < eCount; e++)
 			{
 				int typeIdx = (int)ReplaySerializer.ReadByte();
-				Console.WriteLine(typeIdx);
+				//Console.WriteLine($"Key:{typeIdx}:{ReplaySerializer.keyframeTypes[typeIdx]}");
+				//Problem line
 				ReplayRecorder.EventKeyframe kf3 = (ReplayRecorder.EventKeyframe)Activator.CreateInstance(ReplaySerializer.keyframeTypes[typeIdx]);
 				kf3.Deserialize();
 				recorder.eventTrack.Add(kf3);
