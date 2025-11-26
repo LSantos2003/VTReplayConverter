@@ -205,7 +205,7 @@ namespace VTReplayConverter
             }
 
 
-            //ACMIUtils.ReplaceWithZippedVersion(tacviewSavePath);
+            ACMIUtils.ReplaceWithZippedVersion(tacviewSavePath);
 
             float fileSize = new FileInfo(tacviewSavePath).Length;
             fileSize /= 1024*1024;
