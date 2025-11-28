@@ -123,27 +123,31 @@ namespace VTReplayConverter
 
         private void CreateReplayList()
         {
-            if (!Directory.Exists(Program.VTReplaysPath))
-            {
-                MessageBox.Show("WARNING: No VTOL VR Tactical Replay Files detected. Go play some VTOL VR!");
-            }
-
-            string[] replayPathsVTOL = Directory.GetDirectories(Program.VTReplaysPath);
-            string[] replayPathsVFM = Directory.GetFiles(Program.VFMReplaysPath);
-
             int replayButtonCount = 0;
-            foreach(string replayPath in replayPathsVTOL)
+
+            if (Directory.Exists(Program.VTReplaysPath))
             {
-                CreateReplayButton(this.TemplateButton, replayPath, replayButtonCount);
-                replayButtonCount++;
+                string[] replayPathsVTOL = Directory.GetDirectories(Program.VTReplaysPath);
+
+                foreach (string replayPath in replayPathsVTOL)
+                {
+                    CreateReplayButton(this.TemplateButton, replayPath, replayButtonCount);
+                    replayButtonCount++;
+                }
             }
 
-            foreach(string replayPath in replayPathsVFM)
+            if (Directory.Exists(Program.VFMReplaysPath))
             {
-                if (replayPath.Contains(".vrb"))
+                string[] replayPathsVFM = Directory.GetFiles(Program.VFMReplaysPath);
+
+
+                foreach (string replayPath in replayPathsVFM)
                 {
-                    CreateReplayButtonVFM(this.TemplateButton, replayPath, replayButtonCount);
-                    replayButtonCount++;
+                    if (replayPath.Contains(".vrb"))
+                    {
+                        CreateReplayButtonVFM(this.TemplateButton, replayPath, replayButtonCount);
+                        replayButtonCount++;
+                    }
                 }
             }
         }

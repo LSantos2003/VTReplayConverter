@@ -47,7 +47,7 @@ namespace VTOLVR.ReplaySystem
 			this.velocity = ReplaySerializer.ReadVector3();
 			if (!ReplaySerializer.ConvertingVFM) { this.mass = ReplaySerializer.ReadFloat(); }
 			this.bId = ReplaySerializer.ReadInt();
-
+			
 			if (ReplaySerializer.ConvertingVFM)
             {
 				this.endPt = ReplaySerializer.ReadFixedPoint();
