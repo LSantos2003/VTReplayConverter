@@ -111,8 +111,13 @@ namespace VTReplayConverter
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            List<string> replayPaths = Directory.GetFiles(Program.VTReplaysPath, "*.*vtr", SearchOption.AllDirectories).ToList();
-            replayPaths.AddRange(Directory.GetFiles(Program.VFMReplaysPath, "*.vrb", SearchOption.AllDirectories));
+            List<string> replayPaths = new List<string>();
+
+            if (Directory.Exists(Program.VTReplaysPath))
+                replayPaths.AddRange(Directory.GetFiles(Program.VTReplaysPath, "*.*vtr", SearchOption.AllDirectories));
+
+            if (Directory.Exists(Program.VFMReplaysPath))
+                replayPaths.AddRange(Directory.GetFiles(Program.VFMReplaysPath, "*.vrb", SearchOption.AllDirectories));
 
             // Console.WriteLine("-----------------------");
             // Console.WriteLine("Converting all VTR files\n");

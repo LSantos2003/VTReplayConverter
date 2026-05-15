@@ -46,6 +46,7 @@
             this.refreshReplaysButton = new System.Windows.Forms.Button();
             this.excludeBullets = new System.Windows.Forms.CheckBox();
             this.versionLabel = new System.Windows.Forms.Label();
+            this.openVFMReplay = new System.Windows.Forms.Button();
             this.ReplayButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -188,7 +189,7 @@
             this.OpenReplayFolder.Name = "OpenReplayFolder";
             this.OpenReplayFolder.Size = new System.Drawing.Size(178, 44);
             this.OpenReplayFolder.TabIndex = 11;
-            this.OpenReplayFolder.Text = "OPEN REPLAYS FOLDER";
+            this.OpenReplayFolder.Text = "OPEN VTOL REPLAYS FOLDER";
             this.OpenReplayFolder.UseVisualStyleBackColor = false;
             this.OpenReplayFolder.Click += new System.EventHandler(this.OpenReplayFolder_Click);
             // 
@@ -225,7 +226,7 @@
             this.refreshReplaysButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.refreshReplaysButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.refreshReplaysButton.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.refreshReplaysButton.Location = new System.Drawing.Point(580, 112);
+            this.refreshReplaysButton.Location = new System.Drawing.Point(580, 160);
             this.refreshReplaysButton.Name = "refreshReplaysButton";
             this.refreshReplaysButton.Size = new System.Drawing.Size(178, 44);
             this.refreshReplaysButton.TabIndex = 15;
@@ -263,12 +264,27 @@
             this.versionLabel.Text = "Version 1.0.00";
             this.versionLabel.Click += new System.EventHandler(this.versionLabel_Click);
             // 
+            // openVFMReplay
+            // 
+            this.openVFMReplay.BackColor = System.Drawing.Color.Silver;
+            this.openVFMReplay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.openVFMReplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.openVFMReplay.Font = new System.Drawing.Font("Unispace", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.openVFMReplay.Location = new System.Drawing.Point(580, 110);
+            this.openVFMReplay.Name = "openVFMReplay";
+            this.openVFMReplay.Size = new System.Drawing.Size(178, 44);
+            this.openVFMReplay.TabIndex = 17;
+            this.openVFMReplay.Text = "OPEN VFM REPLAYS FOLDER";
+            this.openVFMReplay.UseVisualStyleBackColor = false;
+            this.openVFMReplay.Click += new System.EventHandler(this.openVFMReplay_Click);
+            // 
             // VTRConverterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(33)))), ((int)(((byte)(46)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.openVFMReplay);
             this.Controls.Add(this.excludeBullets);
             this.Controls.Add(this.refreshReplaysButton);
             this.Controls.Add(this.updateButton);
@@ -310,5 +326,6 @@
         private System.Windows.Forms.Button refreshReplaysButton;
         private System.Windows.Forms.CheckBox excludeBullets;
         private System.Windows.Forms.Label versionLabel;
+        private System.Windows.Forms.Button openVFMReplay;
     }
 }

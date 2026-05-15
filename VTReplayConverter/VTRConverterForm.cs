@@ -1,16 +1,11 @@
 ﻿using Squirrel;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text;
 
 namespace VTReplayConverter
 {
@@ -41,7 +36,7 @@ namespace VTReplayConverter
             WarningLabel.Visible = false;
             excludeEW.Checked = !VTACMI.IncludeEW;
             excludeBullets.Checked = !VTACMI.IncludeBullets;
-
+            
             CreateReplayList();
             this.TemplateButton.Visible = false;
 
@@ -178,7 +173,12 @@ namespace VTReplayConverter
         {
             Button button = new Button();
             this.Controls.Add(button);
-            string fileName = "(VFM)" + Path.GetFileNameWithoutExtension(replayPath);
+            string fileName = Path.GetFileNameWithoutExtension(replayPath);
+            string vriFilePath = Path.Combine(Path.GetDirectoryName(replayPath), fileName + ".vri");
+            string vriContents = File.ReadAllText(vriFilePath);
+
+            //Delete this line after VRI parasing implemented
+            fileName = "(VFM)" + Path.GetFileNameWithoutExtension(replayPath);
             button.Text = fileName;
             button.Parent = this.ReplayButtonPanel;
             button.Size = templateButton.Size;
@@ -263,7 +263,14 @@ namespace VTReplayConverter
 
         private void OpenReplayFolder_Click(object sender, EventArgs e)
         {
-            Process.Start(Program.VTReplaysPath);
+            if(Directory.Exists(Program.VTReplaysPath))
+                Process.Start(Program.VTReplaysPath);
+        }
+
+        private void openVFMReplay_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(Program.VFMReplaysPath))
+                Process.Start(Program.VFMReplaysPath);
         }
 
         private async void CheckForUpdate()
@@ -313,5 +320,7 @@ namespace VTReplayConverter
         {
 
         }
+
+    
     }
 }
