@@ -63,13 +63,6 @@ SL-MRM Launcher:
 SL-MRM Radar:AntiAircraft.SAM.SA-6.1S91.obj
 Z20x2 Anti-Air Artillery:vtolvr_staticAAA-20x2.obj
 AH-94:Rotorcraft.AH-64.obj
-F-16:FixedWing.F-16.obj
-A-10D:FixedWing.A-10.obj
-Carrier:Watercraft.CVN-74.obj
-Artillery:vtolvr_Artillery.obj
-AH-6:Rotorcraft.MD 500.obj
-SU-47M:FixedWing.Su-47.obj
-F-22A:FixedWing.F-22.obj
 ADM-160J:Missile.AGM-84E.obj
 AGM-89:Missile.AGM-84E.obj
 AGM-145:Core.Missile.obj
@@ -127,3 +120,12 @@ PAC-3:Missile.9M330.obj
 RIM-67B:Missile.9M330.obj
 9M311:Missile.9M330.obj
 RGM-85:Missile.9M330.obj
+F-16:FixedWing.F-16.obj
+A-10D:FixedWing.A-10.obj
+Carrier:Watercraft.CVN-74.obj
+Artillery:vtolvr_Artillery.obj
+AH-6:Rotorcraft.MD 500.obj
+SU-47M:FixedWing.Su-47.obj
+F-22A:FixedWing.F-22.obj
+AV-8B:FixedWing.AV-8B.obj
+F-5E:FixedWing.F-5.obj

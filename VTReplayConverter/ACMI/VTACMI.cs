@@ -295,7 +295,15 @@ namespace VTReplayConverter
 
             ACMIUtils.GetPositionAndRotation(this.recorder.motionTracks[entity.id], time, out position, out eulerRotation, out rotation, out lastFrame);
 
-            if (entity.metaData.label.Contains("Carrier"))
+            if(entity.metaData.label.Contains("Assault Carrier"))
+            {
+                Vector3 temp = position;
+                temp.y = position.y - 17f;
+                position = temp;
+
+                position += rotation * Vector3.forward * + 5f;
+            }
+            else if (entity.metaData.label.Contains("Carrier"))
             {
                 Vector3 temp = position;
                 temp.y = position.y - 16f;
